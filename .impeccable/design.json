@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "world": "cartridge-shelf-black-pegboard",
+  "color": {
+    "peg": "#161615", "pegHole": "#050505", "pegRim": "#262624",
+    "ink": "#f3efe6", "inkSoft": "#b8b1a3",
+    "ply": "#dcae72", "plyEdge": "#b9864a", "plyGrain": "#c89a5e",
+    "label": "#fbf7ee", "tag": "#fbf7ee", "tagInk": "#161615",
+    "cart": { "tapAgainstTime": "#4b2a8c", "dockside": "#178f92", "circuitWeave": "#5a626e" }
+  },
+  "type": {
+    "display": { "family": "Bricolage Grotesque", "file": "assets/fonts/bricolage.woff2", "weight": 800, "stretch": "78%-88%", "tracking": "-0.035em" },
+    "body": { "family": "system-ui", "size": "17px", "lineHeight": 1.55 }
+  },
+  "motion": { "signature": "cartridge lift", "duration": "420ms", "ease": "cubic-bezier(0.16, 1, 0.3, 1)" },
+  "radius": { "cart": "14px 14px 6px 6px", "label": "7px", "tag": "6px 12px 12px 6px", "screenshot": "18px" }
+}

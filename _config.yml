@@ -1,0 +1,4 @@
+# GitHub Pages: publish the site files only, not the design notes.
+exclude:
+  - PRODUCT.md
+  - DESIGN.md
