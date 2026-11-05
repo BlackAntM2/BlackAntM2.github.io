@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ANTTECH · small iPhone games</title>
-<meta name="description" content="Small, finished, free iPhone games made by one developer: Tap Against Time, Dockside: Cast Off, Circuit Weave and Raccoon Raid.">
+<meta name="description" content="Small, finished, free iPhone games made by one developer: Tap Against Time, Dockside: Cast Off, Circuit Weave, Raccoon Raid and Shadowbound.">
 <meta name="theme-color" content="#0d0d10">
 <meta property="og:title" content="ANTTECH">
 <meta property="og:description" content="Small games. Finished. Free on iPhone.">
@@ -180,7 +180,7 @@ button { font: inherit; color: inherit; }
 .page { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .grid {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: 14px; row-gap: 20px;
+  column-gap: 14px; row-gap: 14px;
   align-content: start;
 }
 .widget {
@@ -212,14 +212,16 @@ button { font: inherit; color: inherit; }
 .widget h2 { margin: 0 0 4px; font: 700 0.7rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
 .board ul { list-style: none; margin: 0; padding: 0; }
 .board li + li { border-top: 1px solid rgb(255 255 255 / 0.08); }
-.board button { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border: 0; background: none; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out); }
+.board button { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 5px 0; border: 0; background: none; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out); }
 .board button:active { transform: scale(0.97); }
-.board img { width: 30px; height: 30px; border-radius: 22.5%; }
+.board img { width: 28px; height: 28px; border-radius: 22.5%; }
 .board b { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pill { font: 700 0.66rem/1 var(--body); letter-spacing: 0.03em; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
 .pill.live { background: rgb(61 220 132 / 0.18); color: #6ff0a6; }
 .pill.review { background: rgb(255 196 61 / 0.16); color: #ffd36b; }
 .pill.test { background: rgb(181 83 31 / 0.3); color: #ffab7a; }
+.pill.dev { background: rgb(120 160 255 / 0.16); color: #a9c2ff; }
+.badge.soon { background: #2f7bf6; }
 .pill.live::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: currentColor; vertical-align: 1px; animation: pulse 2.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.35; } }
 
@@ -508,7 +510,7 @@ button { font: inherit; color: inherit; }
   .widget b.big { font-size: 1.4rem; }
   .widget.studio small { font-size: 0.64rem; }
 }
-@media (max-height: 700px) and (max-width: 760px) { .lock-time { font-size: 4.8rem; } .notes { margin-top: 16px; } .note .body { display: none; }
+@media (max-height: 700px) and (max-width: 760px) { .widget:not(.board):not(.lab) { aspect-ratio: 1.6 !important; } .widget.studio b.big { font-size: 1.1rem; } .grid { row-gap: 10px; } .board button { padding: 3px 0; } .lock-time { font-size: 4.8rem; } .notes { margin-top: 16px; } .note .body { display: none; }
   .widget:not(.board):not(.lab) { aspect-ratio: 1.25; } }
 
 /* Without JavaScript every page and app is simply listed. */
@@ -542,6 +544,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   <button class="app-icon" type="button" data-open="dockside"><span class="tile"><img src="assets/games/dockside-icon.webp" alt="" width="128" height="128"></span><span class="tip">Dockside: Cast Off</span></button>
   <button class="app-icon" type="button" data-open="circuit-weave"><span class="tile"><img src="assets/games/cw-icon.webp" alt="" width="128" height="128"></span><span class="tip">Circuit Weave</span></button>
   <button class="app-icon" type="button" data-open="raccoon-raid"><span class="tile"><img src="assets/games/rr-icon.webp" alt="" width="128" height="128"></span><span class="tip">Raccoon Raid</span></button>
+  <button class="app-icon" type="button" data-open="shadowbound"><span class="tile"><img src="assets/games/sb-icon.webp" alt="" width="128" height="128"></span><span class="tip">Shadowbound · coming soon</span></button>
   <i class="sep" aria-hidden="true"></i>
   <button class="app-icon" type="button" data-open="about"><span class="tile"><span class="glyph g-about"><img src="assets/anttech-logo.png" alt="" width="64" height="64"></span></span><span class="tip">About ANTTECH</span></button>
   <button class="app-icon" type="button" data-open="privacy"><span class="tile"><span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span></span><span class="tip">Privacy</span></button>
@@ -561,6 +564,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
       <a href="dockside-privacy.html">Dockside privacy</a>
       <a href="circuit-weave-privacy.html">Circuit Weave privacy</a>
       <a href="raccoon-raid-privacy.html">Raccoon Raid privacy</a>
+      <a href="shadowbound-privacy.html">Shadowbound privacy</a>
       <a href="site-privacy.html">Website privacy</a>
       <a href="mailto:anttech1081@gmail.com">anttech1081@gmail.com</a>
     </nav>
@@ -612,14 +616,18 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
                 <button class="app-icon" type="button" style="--i:5" data-open="raccoon-raid" aria-label="Raccoon Raid, new">
                   <span class="tile"><img src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="badge" aria-hidden="true">NEW</span></span><span class="label">Raccoon Raid</span>
                 </button>
+                <button class="app-icon" type="button" style="--i:6" data-open="shadowbound" aria-label="Shadowbound, coming soon">
+                  <span class="tile"><img src="assets/games/sb-icon.webp" alt="" width="128" height="128"><span class="badge soon" aria-hidden="true">SOON</span></span><span class="label">Shadowbound</span>
+                </button>
 
-                <section class="widget glass board" style="--i:6" aria-labelledby="board-h">
+                <section class="widget glass board" style="--i:7" aria-labelledby="board-h">
                   <h2 id="board-h">Release board</h2>
                   <ul>
                     <li><button type="button" data-open="tap-against-time"><img src="assets/games/tat-icon.webp" alt=""><b>Tap Against Time</b><span class="pill live">On the App Store</span></button></li>
                     <li><button type="button" data-open="dockside"><img src="assets/games/dockside-icon.webp" alt=""><b>Dockside: Cast Off</b><span class="pill review">In review</span></button></li>
                     <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">In review</span></button></li>
                     <li><button type="button" data-open="raccoon-raid"><img src="assets/games/rr-icon.webp" alt=""><b>Raccoon Raid</b><span class="pill test">In testing</span></button></li>
+                    <li><button type="button" data-open="shadowbound"><img src="assets/games/sb-icon.webp" alt=""><b>Shadowbound</b><span class="pill dev">In development</span></button></li>
                   </ul>
                 </section>
               </div>
@@ -761,6 +769,21 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
         <div class="bar" aria-hidden="true"></div>
       </article>
 
+      <article class="app" id="shadowbound" role="dialog" aria-modal="true" aria-labelledby="h-sb" style="--c: #1b2a3a">
+        <div class="cover"><img src="assets/games/sb-icon.webp" alt=""></div>
+        <div class="scroll">
+          <div class="app-head">
+            <img src="assets/games/sb-icon.webp" alt="" width="96" height="96">
+            <div><h2 id="h-sb">Shadowbound</h2><div class="status-line">In development</div><span class="get wait">Coming to the App Store</span></div>
+          </div>
+          <p class="about-text">A wall-jumping ninja and 500 towers that lie to you. Leap wall to wall before your grip gives out, read the traps, and race the ghost of your last try. Fake spikes, runaway exits, moss and ice, twenty worlds. Hard on purpose.</p>
+          <div class="shots"><img src="assets/games/sb-1.webp" alt="Shadowbound mid-climb in the bamboo courtyard, the ninja clinging to the left wall between traps" width="414" height="900" loading="lazy"><img src="assets/games/sb-2.webp" alt="The Shadowbound home screen with the Continue card and today's trials" width="414" height="900" loading="lazy"></div>
+          <div class="links"><a href="shadowbound-privacy.html">Privacy policy</a></div>
+        </div>
+        <button class="close glass" type="button" aria-label="Close Shadowbound"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <div class="bar" aria-hidden="true"></div>
+      </article>
+
       <article class="app" id="about" role="dialog" aria-modal="true" aria-labelledby="h-about" style="--c: #050507">
         <div class="cover"><img src="assets/anttech-logo.png" alt=""></div>
         <div class="scroll">
@@ -789,6 +812,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
             <a href="dockside-privacy.html">Dockside: Cast Off</a>
             <a href="circuit-weave-privacy.html">Circuit Weave</a>
             <a href="raccoon-raid-privacy.html">Raccoon Raid</a>
+            <a href="shadowbound-privacy.html">Shadowbound</a>
             <a href="site-privacy.html">This website</a>
           </div>
         </div>
@@ -1159,6 +1183,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     var v = app.querySelector("video");
     if (v && !reduce.matches) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
     hideBanner();
+    clearTimeout(islT); if (island.classList.contains("expanded")) islandSet("compact");
   }
   function onAppClosed(app) {
     var v = app.querySelector("video"); if (v) v.pause();
@@ -1237,6 +1262,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   // ---- notification banners: a few drop in while you look around
   var NEWS = [
     { app: "raccoon-raid", img: "assets/games/rr-icon.webp", name: "Raccoon Raid", title: "The bear is awake", body: "Raccoon Raid is in testing. Coming to the App Store." },
+    { app: "shadowbound", img: "assets/games/sb-icon.webp", name: "Shadowbound", title: "The tower lies", body: "500 towers, one ninja. Shadowbound is coming soon." },
     { app: "tap-against-time", img: "assets/games/tat-icon.webp", name: "Tap Against Time", title: "Beat your best", body: "Play a quick round right here.", play: true },
     { app: "circuit-weave", img: "assets/games/cw-icon.webp", name: "Circuit Weave", title: "Waiting on Apple", body: "Circuit Weave is in App Store review." },
     { app: "dockside", img: "assets/games/dockside-icon.webp", name: "Dockside", title: "Harbour traffic", body: "Dockside: Cast Off is in App Store review." }
@@ -1291,6 +1317,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     { t: "Dockside: Cast Off", s: "Game · In App Store review", img: "assets/games/dockside-icon.webp", k: "boats harbour harbor puzzle", app: "dockside" },
     { t: "Circuit Weave", s: "Game · In App Store review", img: "assets/games/cw-icon.webp", k: "puzzle lines pairs wires", app: "circuit-weave" },
     { t: "Raccoon Raid: Campsite Chaos", s: "Game · In testing", img: "assets/games/rr-icon.webp", k: "slingshot bear camp raccoon trailer video", app: "raccoon-raid" },
+    { t: "Shadowbound", s: "Game · In development", img: "assets/games/sb-icon.webp", k: "ninja wall jump tower rage hard climb", app: "shadowbound" },
     { t: "Play Tap Against Time", s: "A quick round, right here", img: "assets/games/tat-icon.webp", k: "play game round score mini", app: "tap-against-time", play: true },
     { t: "About ANTTECH", s: "The studio", img: "assets/anttech-logo.png", k: "studio developer north carolina contact", app: "about" },
     { t: "Privacy", s: "Every game's policy", glyph: "privacy", k: "policy data", app: "privacy" },
@@ -1298,6 +1325,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     { t: "Dockside privacy policy", s: "Web page", glyph: "privacy", k: "policy data", href: "dockside-privacy.html" },
     { t: "Circuit Weave privacy policy", s: "Web page", glyph: "privacy", k: "policy data", href: "circuit-weave-privacy.html" },
     { t: "Raccoon Raid privacy policy", s: "Web page", glyph: "privacy", k: "policy data ads admob", href: "raccoon-raid-privacy.html" },
+    { t: "Shadowbound privacy policy", s: "Web page", glyph: "privacy", k: "policy data ads admob", href: "shadowbound-privacy.html" },
     { t: "Website privacy", s: "Web page", glyph: "privacy", k: "policy data site", href: "site-privacy.html" },
     { t: "Instagram", s: "@ant_tech_", glyph: "ig", k: "social follow insta", href: "https://www.instagram.com/ant_tech_/" },
     { t: "Email ANTTECH", s: "anttech1081@gmail.com", glyph: "mail", k: "mail contact support help", href: "mailto:anttech1081@gmail.com" }
