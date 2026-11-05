@@ -26,8 +26,6 @@
   --bg: #0d0d10;
   --ink: #f5f3ee;
   --ink-soft: #b9b6ae;
-  --glass: rgb(28 28 34 / 0.55);
-  --glass-edge: rgb(255 255 255 / 0.14);
   --tat: #4b2a8c;
   --dock: #178f92;
   --cw: #5a626e;
@@ -38,6 +36,7 @@
   --screen-r: 46px;
   --icon: clamp(58px, 16vw, 64px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.45, 0.5, 1);
 }
 
 * { box-sizing: border-box; }
@@ -52,7 +51,24 @@ body {
 a { color: inherit; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 10px; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Glass: frosted, a lit top edge, and a soft light that follows the pointer ---------- */
+.glass {
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / 0.17), rgb(255 255 255 / 0.03) 55%),
+    rgb(28 28 36 / 0.42);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -1px 0 rgb(255 255 255 / 0.05),
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 12px 32px -14px rgb(0 0 0 / 0.65);
+}
+.glass::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(220px circle at var(--mx, 25%) var(--my, -30%), rgb(255 255 255 / 0.17), transparent 62%);
+}
 
 /* ---------- Desktop stage: studio intro beside a phone ---------- */
 .stage {
@@ -70,10 +86,44 @@ button { font: inherit; color: inherit; }
 .pitch .mark img { width: 40px; height: 40px; border-radius: 11px; }
 .pitch h1 { margin: 28px 0 0; font: 800 clamp(2.8rem, 5.4vw, 4.8rem)/0.9 var(--display); font-stretch: 78%; letter-spacing: -0.035em; text-wrap: balance; }
 .pitch p { margin: 18px 0 0; color: var(--ink-soft); font-size: 1.1rem; max-width: 30ch; }
-.pitch .hint { margin-top: 28px; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 600; }
-.pitch .hint::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 4px rgb(61 220 132 / 0.2); }
+.pitch .hint { margin-top: 28px; display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 600; max-width: 34ch; }
+.pitch .hint::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 4px rgb(61 220 132 / 0.2); }
 .pitch .links { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.92rem; color: var(--ink-soft); }
 .pitch .links a { padding-block: 6px; }
+
+/* ---------- The dash (computers): a glass dock down the left edge ---------- */
+.dash {
+  position: fixed; left: 20px; top: 50%; z-index: 20;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 14px 12px; border-radius: 26px;
+}
+.dash .app-icon { position: relative; transform-origin: 0% 50%; transform: translateX(calc((var(--s, 1) - 1) * 16px)) scale(var(--s, 1)); transition: transform 150ms var(--ease-out); }
+.dash .tile { --icon: 52px; }
+.dash .tip {
+  position: absolute; left: calc(100% + 18px); top: 50%; translate: -6px -50%;
+  padding: 6px 12px; border-radius: 10px; white-space: nowrap;
+  font: 600 0.82rem/1.2 var(--body);
+  background: rgb(24 24 30 / 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  opacity: 0; pointer-events: none; transition: opacity 140ms ease, translate 200ms var(--ease-out);
+}
+.dash .app-icon:hover .tip, .dash .app-icon:focus-visible .tip { opacity: 1; translate: 0 -50%; }
+.dash .app-icon.running::before {
+  content: ""; position: absolute; left: -9px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px;
+  border-radius: 50%; background: #fff; box-shadow: 0 0 8px #fff;
+}
+.dash .sep { width: 36px; height: 1px; background: rgb(255 255 255 / 0.16); }
+.dash .spin {
+  width: 52px; height: 52px; border: 0; border-radius: 16px; cursor: pointer;
+  display: grid; place-items: center; background: rgb(255 255 255 / 0.08);
+  transition: background 150ms ease, transform 150ms var(--ease-out);
+}
+.dash .spin:hover { background: rgb(255 255 255 / 0.16); }
+.dash .spin:active { transform: scale(0.9); }
+.js .dash { transform: translate(-140%, -50%); }
+.js.ready .dash { transform: translate(0, -50%); transition: transform 800ms var(--spring) 250ms; }
+@media (max-width: 1099px) { .dash { display: none; } }
 
 /* ---------- The phone ---------- */
 .phone {
@@ -83,6 +133,7 @@ button { font: inherit; color: inherit; }
   border-radius: calc(var(--screen-r) + 12px);
   background: linear-gradient(145deg, #3a3a40, #121216 40%, #2a2a2f);
   box-shadow: 0 0 0 1.5px #55555c, 0 40px 90px -20px rgb(0 0 0 / 0.85), inset 0 0 0 2px #050507;
+  will-change: transform;
 }
 .screen {
   position: relative; width: 100%; height: 100%;
@@ -90,11 +141,11 @@ button { font: inherit; color: inherit; }
   overflow: hidden;
   background: #101014;
   isolation: isolate;
-  contain: layout paint;
 }
 .camera { position: absolute; top: 11px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 20px; background: #000; z-index: 60; }
+.glare { position: absolute; inset: 0; z-index: 59; pointer-events: none; border-radius: inherit; background: radial-gradient(600px circle at var(--gx, 30%) var(--gy, 0%), rgb(255 255 255 / 0.07), transparent 55%); }
 
-/* Wallpaper: slow drifting colour light in each game's colour, plus the ant mark. */
+/* Wallpaper: slow drifting light in each game's colour. */
 .wall { position: absolute; inset: -20%; z-index: 0; }
 .wall i { position: absolute; width: 70%; aspect-ratio: 1; border-radius: 50%; opacity: 0.85; }
 .wall i:nth-child(1) { left: -10%; top: 0%;   background: radial-gradient(closest-side, var(--rr), transparent); animation: drift1 34s ease-in-out infinite alternate; }
@@ -104,7 +155,7 @@ button { font: inherit; color: inherit; }
 @keyframes drift1 { to { transform: translate(18%, 14%) scale(1.15); } }
 @keyframes drift2 { to { transform: translate(-16%, 10%) scale(0.9); } }
 @keyframes drift3 { to { transform: translate(12%, -16%) scale(1.1); } }
-.wall::after { content: ""; position: absolute; inset: 0; background: rgb(8 8 12 / 0.35); }
+.wall::after { content: ""; position: absolute; inset: 0; background: rgb(8 8 12 / 0.3); }
 
 /* Status bar */
 .status {
@@ -123,8 +174,10 @@ button { font: inherit; color: inherit; }
   padding: 62px 22px 0;
   display: flex; flex-direction: column;
   transform-origin: 50% 50%;
-  will-change: transform;
 }
+.pages { position: relative; flex: 1; min-height: 0; perspective: 1000px; touch-action: pan-y; }
+.cube { position: absolute; inset: 0; transform-style: preserve-3d; }
+.page { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .grid {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: 14px; row-gap: 20px;
@@ -133,22 +186,20 @@ button { font: inherit; color: inherit; }
 .widget {
   grid-column: span 2; aspect-ratio: 1;
   border-radius: 24px; overflow: hidden; position: relative;
-  border: 0; padding: 14px; text-align: left; cursor: pointer;
+  border: 0; padding: 14px; text-align: left; cursor: pointer; text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition: transform 160ms var(--ease-out);
 }
 .widget:active { transform: scale(0.96); }
-.widget.studio {
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), var(--glass);
-  backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: inset 0 0 0 1px var(--glass-edge);
-  display: flex; flex-direction: column; justify-content: space-between;
-  cursor: default;
-}
-.widget.studio:active { transform: none; }
+.widget.studio, .widget.social { display: flex; flex-direction: column; justify-content: space-between; }
+.widget.studio { cursor: default; }
+.widget.studio:active, .widget.board:active, .widget.lab:active { transform: none; }
 .widget.studio img { width: 34px; height: 34px; border-radius: 9px; }
-.widget.studio b { display: block; font: 800 1.7rem/0.92 var(--display); font-stretch: 78%; letter-spacing: -0.02em; }
-.widget.studio small { display: block; margin-top: 6px; color: var(--ink-soft); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.widget b.big { display: block; font: 800 1.7rem/0.92 var(--display); font-stretch: 78%; letter-spacing: -0.02em; }
+.widget small { display: block; margin-top: 6px; color: var(--ink-soft); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; }
+.widget.studio small { text-transform: uppercase; }
+.widget.social .glyph { width: 38px; height: 38px; border-radius: 11px; }
+.widget.social b { display: block; font: 800 1.25rem/1 var(--display); font-stretch: 82%; }
 .widget.feature { background: #000; display: flex; flex-direction: column; justify-content: flex-end; }
 .widget.feature img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; transform: scale(1.35); transform-origin: 50% 60%; }
 .widget.feature::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgb(0 0 0 / 0.78)); z-index: 1; }
@@ -156,6 +207,28 @@ button { font: inherit; color: inherit; }
 .widget.feature .tag { align-self: flex-start; font: 800 0.66rem/1 var(--body); letter-spacing: 0.08em; background: var(--rr); padding: 5px 8px; border-radius: 6px; margin-bottom: 7px; }
 .widget.feature .title { font: 800 1.15rem/1 var(--display); font-stretch: 82%; }
 .widget.feature .sub { font-size: 0.74rem; color: rgb(255 255 255 / 0.78); margin-top: 3px; }
+
+.widget.board, .widget.lab { grid-column: span 4; aspect-ratio: auto; cursor: default; padding: 14px 16px 8px; }
+.widget h2 { margin: 0 0 4px; font: 700 0.7rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.board ul { list-style: none; margin: 0; padding: 0; }
+.board li + li { border-top: 1px solid rgb(255 255 255 / 0.08); }
+.board button { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border: 0; background: none; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out); }
+.board button:active { transform: scale(0.97); }
+.board img { width: 30px; height: 30px; border-radius: 22.5%; }
+.board b { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pill { font: 700 0.66rem/1 var(--body); letter-spacing: 0.03em; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.live { background: rgb(61 220 132 / 0.18); color: #6ff0a6; }
+.pill.review { background: rgb(255 196 61 / 0.16); color: #ffd36b; }
+.pill.test { background: rgb(181 83 31 / 0.3); color: #ffab7a; }
+.pill.live::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: currentColor; vertical-align: 1px; animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+.widget.lab { padding: 16px; }
+.lab p { margin: 6px 0 14px; font: 800 1.2rem/1.05 var(--display); font-stretch: 82%; text-wrap: balance; }
+.meter { height: 6px; border-radius: 3px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 40%; border-radius: inherit; background: linear-gradient(90deg, var(--tat), var(--dock), var(--rr)); animation: build 2.6s ease-in-out infinite; }
+@keyframes build { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.lab small { margin-top: 10px; }
 
 .app-icon {
   display: grid; justify-items: center; gap: 6px;
@@ -167,13 +240,25 @@ button { font: inherit; color: inherit; }
   position: relative;
   width: var(--icon); height: var(--icon);
   border-radius: 22.5%;
-  overflow: visible;
   transition: transform 140ms var(--ease-out), filter 140ms var(--ease-out);
 }
 .app-icon .tile > img, .app-icon .tile > .glyph {
   width: 100%; height: 100%; border-radius: inherit; display: block; object-fit: cover;
   box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.6), inset 0 0 0 0.5px rgb(255 255 255 / 0.15);
 }
+/* glossy top light on every icon, plus one sweep of light when the page arrives */
+.app-icon .tile::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(165deg, rgb(255 255 255 / 0.34), rgb(255 255 255 / 0) 42%), linear-gradient(0deg, rgb(0 0 0 / 0.14), transparent 35%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+.app-icon .tile::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, rgb(255 255 255 / 0.5) 50%, transparent 62%) no-repeat;
+  background-size: 260% 100%; background-position: 160% 0;
+}
+.js.ready .app-icon .tile::before { animation: sweep 1100ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms + 650ms); }
+@keyframes sweep { to { background-position: -60% 0; } }
 .app-icon:active .tile, .app-icon.pressed .tile { transform: scale(0.88); filter: brightness(0.82); }
 .app-icon .label { font: 500 0.72rem/1.15 var(--body); text-shadow: 0 1px 3px rgb(0 0 0 / 0.6); max-width: 76px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .badge {
@@ -192,16 +277,15 @@ button { font: inherit; color: inherit; }
 .g-mail { background: linear-gradient(160deg, #4fa3ff, #1e63e9); }
 .g-ig { background: linear-gradient(150deg, #8a3ffc, #e2336b 55%, #f7a23b); }
 
-.dots { margin: auto 0 14px; display: flex; justify-content: center; gap: 8px; }
-.dots i { width: 7px; height: 7px; border-radius: 50%; background: rgb(255 255 255 / 0.35); }
-.dots i:first-child { background: #fff; }
+.dots { margin: 8px 0 14px; display: flex; justify-content: center; gap: 4px; }
+.dots button { width: 20px; height: 20px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.dots button::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: rgb(255 255 255 / 0.35); transition: background 200ms, transform 300ms var(--spring); }
+.dots button[aria-current="true"]::before { background: #fff; transform: scale(1.15); }
 .dock {
+  position: relative;
   margin: 0 -10px 22px; padding: 14px 16px;
   border-radius: 32px;
   display: grid; grid-template-columns: repeat(4, 1fr); justify-items: center;
-  background: var(--glass);
-  backdrop-filter: blur(26px) saturate(170%); -webkit-backdrop-filter: blur(26px) saturate(170%);
-  box-shadow: inset 0 0 0 1px var(--glass-edge);
 }
 .dock .label { display: none; }
 
@@ -209,74 +293,50 @@ button { font: inherit; color: inherit; }
 .js .home .grid > *, .js .dock > * { opacity: 0; transform: scale(0.6) translateY(14px); }
 .js.ready .home .grid > *, .js.ready .dock > * {
   opacity: 1; transform: none;
-  transition: opacity 420ms var(--ease-out), transform 620ms cubic-bezier(0.34, 1.45, 0.5, 1);
+  transition: opacity 420ms var(--ease-out), transform 620ms var(--spring);
   transition-delay: calc(var(--i, 0) * 45ms);
 }
 
-
-.widget.board {
-  grid-column: span 4; aspect-ratio: auto; cursor: default; padding: 14px 16px 8px;
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03)), var(--glass);
-  backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: inset 0 0 0 1px var(--glass-edge);
-}
-.widget.board:active { transform: none; }
-.board h2 { margin: 0 0 4px; font: 700 0.7rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
-.board ul { list-style: none; margin: 0; padding: 0; }
-.board li + li { border-top: 1px solid rgb(255 255 255 / 0.08); }
-.board button { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border: 0; background: none; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out); }
-.board button:active { transform: scale(0.97); }
-.board img { width: 30px; height: 30px; border-radius: 22.5%; }
-.board b { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pill { font: 700 0.66rem/1 var(--body); letter-spacing: 0.03em; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
-.pill.live { background: rgb(61 220 132 / 0.18); color: #6ff0a6; }
-.pill.review { background: rgb(255 196 61 / 0.16); color: #ffd36b; }
-.pill.test { background: rgb(181 83 31 / 0.3); color: #ffab7a; }
-.pill.live::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: currentColor; vertical-align: 1px; animation: pulse 2.4s ease-in-out infinite; }
-@keyframes pulse { 50% { opacity: 0.35; } }
-@media (max-width: 400px) {
-  .widget.studio b { font-size: 1.4rem; }
-  .widget.studio small { font-size: 0.64rem; }
-}
-
-/* ---------- Apps (one per game, plus About and Privacy) ---------- */
+/* ---------- Apps: frosted glass windows over the blurred home screen ---------- */
 .dim { position: absolute; inset: 0; z-index: 4; background: #000; opacity: 0; pointer-events: none; }
-.app {
-  background: #0f0f13;
-  color: var(--ink);
-}
+.app { background: #0f0f13; color: var(--ink); }
 .js .app {
   position: absolute; inset: 0; z-index: 5;
   visibility: hidden;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0) 30%), rgb(13 13 18 / 0.72);
+  backdrop-filter: blur(34px) saturate(170%); -webkit-backdrop-filter: blur(34px) saturate(170%);
   clip-path: inset(0 round var(--screen-r));
-  will-change: clip-path;
+  will-change: clip-path, transform;
 }
 .js .app.open { visibility: visible; }
-.app .cover { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; display: grid; place-items: center; background: var(--c, #222); }
+.app .cover { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; background: var(--c, #222); }
 .app .cover img { width: 100%; height: 100%; object-fit: cover; }
-.app .scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: 58px 22px 70px; transform-origin: 50% 30%; }
+.app .scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: 58px 22px 70px; }
 .app .close {
   position: absolute; top: 52px; right: 16px; z-index: 4;
   width: 34px; height: 34px; border-radius: 50%; border: 0;
-  background: rgb(255 255 255 / 0.12); display: grid; place-items: center; cursor: pointer;
+  display: grid; place-items: center; cursor: pointer;
+  transition: transform 140ms var(--ease-out);
 }
-.app .close svg { width: 14px; height: 14px; }
+.app .close:active { transform: scale(0.88); }
+.app .close svg { position: relative; z-index: 1; width: 14px; height: 14px; }
 .app .bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; height: 34px; display: grid; place-items: center; cursor: grab; touch-action: none; }
 .app .bar::after { content: ""; width: 134px; height: 5px; border-radius: 3px; background: rgb(255 255 255 / 0.85); }
 .app-head { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; margin-top: 18px; }
-.app-head img { width: 96px; height: 96px; border-radius: 22.5%; box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.8); }
+.app-head > img, .app-head > .glyph { width: 96px; height: 96px; border-radius: 22.5%; box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.3); }
 .app-head h2 { margin: 0; font: 800 1.55rem/1 var(--display); font-stretch: 80%; letter-spacing: -0.02em; text-wrap: balance; }
 .app-head .status-line { margin-top: 6px; color: var(--ink-soft); font-size: 0.88rem; }
-.get { display: inline-flex; margin-top: 10px; padding: 7px 20px; border-radius: 999px; background: var(--get); color: #fff; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.03em; text-decoration: none; transition: transform 120ms var(--ease-out); }
+.get { display: inline-flex; margin-top: 10px; padding: 7px 20px; border-radius: 999px; background: var(--get); color: #fff; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.03em; text-decoration: none; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 6px 18px -6px rgb(47 123 246 / 0.7); transition: transform 120ms var(--ease-out); }
 .get:active { transform: scale(0.94); }
-.get.wait { background: rgb(255 255 255 / 0.12); color: var(--ink); font-weight: 700; letter-spacing: 0; font-size: 0.8rem; white-space: nowrap; padding-inline: 14px; }
+.get.wait { background: rgb(255 255 255 / 0.1); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), inset 0 0 0 1px rgb(255 255 255 / 0.1); color: var(--ink); font-weight: 700; letter-spacing: 0; font-size: 0.8rem; white-space: nowrap; padding-inline: 14px; }
 .app .about-text { margin: 22px 0 0; font-size: 1rem; line-height: 1.55; color: #e7e4dd; }
 .shots { display: flex; gap: 12px; overflow-x: auto; margin: 22px -22px 0; padding: 0 22px 6px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .shots::-webkit-scrollbar { display: none; }
-.shots img { flex: 0 0 auto; width: 62%; height: auto; aspect-ratio: 414 / 900; object-fit: cover; border-radius: 18px; scroll-snap-align: start; background: #000; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); }
+.shots img { flex: 0 0 auto; width: 62%; height: auto; aspect-ratio: 414 / 900; object-fit: cover; border-radius: 18px; scroll-snap-align: start; background: #000; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1); }
 .shots.wide img { width: 92%; aspect-ratio: 900 / 414; }
 .app .links { margin-top: 22px; display: grid; gap: 2px; border-radius: 14px; overflow: hidden; }
-.app .links a { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: rgb(255 255 255 / 0.07); text-decoration: none; font-weight: 600; }
+.app .links a { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: rgb(255 255 255 / 0.07); text-decoration: none; font-weight: 600; transition: background 150ms; }
+.app .links a:hover { background: rgb(255 255 255 / 0.12); }
 .app .links a::after { content: "›"; color: var(--ink-soft); font-size: 1.3rem; line-height: 0; }
 .app h3 { margin: 26px 0 0; font: 800 1.15rem/1.1 var(--display); font-stretch: 85%; }
 .app .fine { color: var(--ink-soft); font-size: 0.85rem; margin-top: 18px; }
@@ -287,40 +347,60 @@ button { font: inherit; color: inherit; }
   .pitch { display: none; }
   .phone { width: 100%; height: 100dvh; min-height: 560px; padding: 0; border-radius: 0; background: none; box-shadow: none; }
   .screen { border-radius: 0; --screen-r: 0px; }
-  .camera, .status { display: none; }
+  .camera, .status, .glare { display: none; }
   .home { padding: max(18px, env(safe-area-inset-top)) 20px 0; }
   .dock { margin-bottom: max(14px, env(safe-area-inset-bottom)); }
   .app .scroll { padding-top: max(56px, calc(env(safe-area-inset-top) + 44px)); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
   .app .close { top: max(14px, env(safe-area-inset-top)); }
   .app .bar { height: calc(34px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); }
 }
-@media (max-height: 700px) and (max-width: 760px) { .widget { aspect-ratio: 1.25; } }
+@media (max-width: 400px) {
+  .widget b.big { font-size: 1.4rem; }
+  .widget.studio small { font-size: 0.64rem; }
+}
+@media (max-height: 700px) and (max-width: 760px) { .widget:not(.board):not(.lab) { aspect-ratio: 1.25; } }
 
-/* Without JavaScript every app is simply listed under the phone. */
+/* Without JavaScript every page and app is simply listed. */
 html:not(.js) .phone { height: auto; }
 html:not(.js) .screen { height: auto; overflow: visible; }
-html:not(.js) .home { position: relative; min-height: 780px; }
+html:not(.js) .home { position: relative; }
+html:not(.js) .pages, html:not(.js) .cube, html:not(.js) .page { position: static; }
+html:not(.js) .page + .page { margin-top: 20px; }
 html:not(.js) .app { position: relative; padding: 24px; border-top: 1px solid rgb(255 255 255 / 0.1); }
 html:not(.js) .app .scroll { position: static; padding: 0; }
-html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { display: none; }
+html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, html:not(.js) .dots { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .wall i, .pill.live::before { animation: none; }
-  .js .home .grid > *, .js .dock > * { opacity: 1; transform: none; }
-  .js.ready .home .grid > *, .js.ready .dock > * { transition: none; }
+  .wall i, .pill.live::before, .meter i { animation: none; }
+  .js.ready .app-icon .tile::before { animation: none; }
+  .js .home .grid > *, .js .dock > *, .js .dash { opacity: 1; transform: none; }
+  .js.ready .home .grid > *, .js.ready .dock > *, .js.ready .dash { transition: none; }
+  .js .dash { transform: translateY(-50%); }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .widget.studio, .widget.board, .dock { background: #1c1c22; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .glass, .js .app { background: #1c1c22; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 </style>
 </head>
 <body>
+<nav class="dash glass" id="dash" aria-label="Games">
+  <button class="app-icon" type="button" data-open="tap-against-time"><span class="tile"><img src="assets/games/tat-icon.webp" alt="" width="128" height="128"></span><span class="tip">Tap Against Time</span></button>
+  <button class="app-icon" type="button" data-open="dockside"><span class="tile"><img src="assets/games/dockside-icon.webp" alt="" width="128" height="128"></span><span class="tip">Dockside: Cast Off</span></button>
+  <button class="app-icon" type="button" data-open="circuit-weave"><span class="tile"><img src="assets/games/cw-icon.webp" alt="" width="128" height="128"></span><span class="tip">Circuit Weave</span></button>
+  <button class="app-icon" type="button" data-open="raccoon-raid"><span class="tile"><img src="assets/games/rr-icon.webp" alt="" width="128" height="128"></span><span class="tip">Raccoon Raid</span></button>
+  <i class="sep" aria-hidden="true"></i>
+  <button class="app-icon" type="button" data-open="about"><span class="tile"><span class="glyph g-about"><img src="assets/anttech-logo.png" alt="" width="64" height="64"></span></span><span class="tip">About ANTTECH</span></button>
+  <button class="app-icon" type="button" data-open="privacy"><span class="tile"><span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span></span><span class="tip">Privacy</span></button>
+  <i class="sep" aria-hidden="true"></i>
+  <button class="spin" type="button" id="spin" aria-label="Turn the home screen to the next page"><svg width="22" height="22" viewBox="0 0 22 22" fill="#fff"><circle cx="4" cy="4" r="2.2"/><circle cx="11" cy="4" r="2.2"/><circle cx="18" cy="4" r="2.2"/><circle cx="4" cy="11" r="2.2"/><circle cx="11" cy="11" r="2.2"/><circle cx="18" cy="11" r="2.2"/><circle cx="4" cy="18" r="2.2"/><circle cx="11" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/></svg></button>
+</nav>
+
 <div class="stage">
   <section class="pitch" aria-labelledby="hello">
     <a class="mark" href="/"><img src="assets/anttech-logo.png" alt="" width="40" height="40">ANTTECH</a>
     <h1 id="hello">Small games. Finished. Free.</h1>
     <p>Pocket-sized iPhone games, made by one person in North Carolina. No accounts, no publisher.</p>
-    <span class="hint">Tap an app on the phone to open it</span>
+    <span class="hint">Tap an app to open it. Drag the home screen sideways to spin it.</span>
     <nav class="links" aria-label="Studio links">
       <a href="privacy.html">Tap Against Time privacy</a>
       <a href="dockside-privacy.html">Dockside privacy</a>
@@ -331,10 +411,11 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
     </nav>
   </section>
 
-  <div class="phone">
+  <div class="phone" id="phone">
     <div class="screen" id="screen">
       <div class="wall" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="camera" aria-hidden="true"></div>
+      <div class="glare" id="glare" aria-hidden="true"></div>
       <div class="status" aria-hidden="true">
         <span id="clock">9:41</span>
         <span class="icons">
@@ -345,53 +426,82 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
       </div>
 
       <main class="home" id="home">
-        <div class="grid">
-          <div class="widget studio" style="--i:0" aria-label="ANTTECH">
-            <img src="assets/anttech-logo.png" alt="" width="34" height="34">
-            <span><b>Small games. Finished. Free.</b><small>ANTTECH · iPhone games</small></span>
-          </div>
-          <button class="widget feature" type="button" style="--i:1" data-open="raccoon-raid" aria-label="New: Raccoon Raid, open">
-            <img src="assets/games/rr-1.webp" alt="" width="900" height="414">
-            <span class="tag">NEW</span>
-            <span class="title">Raccoon Raid</span>
-            <span class="sub">Wreck the campsite. Coming soon.</span>
-          </button>
+        <div class="pages" id="pages">
+          <div class="cube" id="cube">
+            <section class="page" aria-label="Games">
+              <div class="grid">
+                <div class="widget glass studio" style="--i:0" aria-label="ANTTECH">
+                  <img src="assets/anttech-logo.png" alt="" width="34" height="34">
+                  <span><b class="big">Small games. Finished. Free.</b><small>ANTTECH · iPhone games</small></span>
+                </div>
+                <button class="widget feature" type="button" style="--i:1" data-open="raccoon-raid" aria-label="New: Raccoon Raid, open">
+                  <img src="assets/games/rr-1.webp" alt="" width="900" height="414">
+                  <span class="tag">NEW</span>
+                  <span class="title">Raccoon Raid</span>
+                  <span class="sub">Wreck the campsite. Coming soon.</span>
+                </button>
 
-          <button class="app-icon" type="button" style="--i:2" data-open="tap-against-time" aria-label="Tap Against Time">
-            <span class="tile"><img src="assets/games/tat-icon.webp" alt="" width="128" height="128"></span><span class="label">Tap Against Time</span>
-          </button>
-          <button class="app-icon" type="button" style="--i:3" data-open="dockside" aria-label="Dockside: Cast Off">
-            <span class="tile"><img src="assets/games/dockside-icon.webp" alt="" width="128" height="128"></span><span class="label">Dockside</span>
-          </button>
-          <button class="app-icon" type="button" style="--i:4" data-open="circuit-weave" aria-label="Circuit Weave">
-            <span class="tile"><img src="assets/games/cw-icon.webp" alt="" width="128" height="128"></span><span class="label">Circuit Weave</span>
-          </button>
-          <button class="app-icon" type="button" style="--i:5" data-open="raccoon-raid" aria-label="Raccoon Raid, new">
-            <span class="tile"><img src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="badge" aria-hidden="true">NEW</span></span><span class="label">Raccoon Raid</span>
-          </button>
-          <section class="widget board" style="--i:6" aria-labelledby="board-h">
-            <h2 id="board-h">Release board</h2>
-            <ul>
-              <li><button type="button" data-open="tap-against-time"><img src="assets/games/tat-icon.webp" alt=""><b>Tap Against Time</b><span class="pill live">On the App Store</span></button></li>
-              <li><button type="button" data-open="dockside"><img src="assets/games/dockside-icon.webp" alt=""><b>Dockside: Cast Off</b><span class="pill review">In review</span></button></li>
-              <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">In review</span></button></li>
-              <li><button type="button" data-open="raccoon-raid"><img src="assets/games/rr-icon.webp" alt=""><b>Raccoon Raid</b><span class="pill test">In testing</span></button></li>
-            </ul>
-          </section>
+                <button class="app-icon" type="button" style="--i:2" data-open="tap-against-time" aria-label="Tap Against Time">
+                  <span class="tile"><img src="assets/games/tat-icon.webp" alt="" width="128" height="128"></span><span class="label">Tap Against Time</span>
+                </button>
+                <button class="app-icon" type="button" style="--i:3" data-open="dockside" aria-label="Dockside: Cast Off">
+                  <span class="tile"><img src="assets/games/dockside-icon.webp" alt="" width="128" height="128"></span><span class="label">Dockside</span>
+                </button>
+                <button class="app-icon" type="button" style="--i:4" data-open="circuit-weave" aria-label="Circuit Weave">
+                  <span class="tile"><img src="assets/games/cw-icon.webp" alt="" width="128" height="128"></span><span class="label">Circuit Weave</span>
+                </button>
+                <button class="app-icon" type="button" style="--i:5" data-open="raccoon-raid" aria-label="Raccoon Raid, new">
+                  <span class="tile"><img src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="badge" aria-hidden="true">NEW</span></span><span class="label">Raccoon Raid</span>
+                </button>
+
+                <section class="widget glass board" style="--i:6" aria-labelledby="board-h">
+                  <h2 id="board-h">Release board</h2>
+                  <ul>
+                    <li><button type="button" data-open="tap-against-time"><img src="assets/games/tat-icon.webp" alt=""><b>Tap Against Time</b><span class="pill live">On the App Store</span></button></li>
+                    <li><button type="button" data-open="dockside"><img src="assets/games/dockside-icon.webp" alt=""><b>Dockside: Cast Off</b><span class="pill review">In review</span></button></li>
+                    <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">In review</span></button></li>
+                    <li><button type="button" data-open="raccoon-raid"><img src="assets/games/rr-icon.webp" alt=""><b>Raccoon Raid</b><span class="pill test">In testing</span></button></li>
+                  </ul>
+                </section>
+              </div>
+            </section>
+
+            <section class="page" aria-label="Studio">
+              <div class="grid">
+                <a class="widget glass social" style="--i:7" href="https://www.instagram.com/ant_tech_/">
+                  <span class="glyph g-ig"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="6" width="17" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.6"/><path d="M8.5 6 10 3.8h4L15.5 6" stroke-linejoin="round"/></svg></span>
+                  <span><b>@ant_tech_</b><small>Watch the games get built</small></span>
+                </a>
+                <a class="widget glass social" style="--i:8" href="mailto:anttech1081@gmail.com">
+                  <span class="glyph g-mail"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>
+                  <span><b>Say hi</b><small>anttech1081@gmail.com</small></span>
+                </a>
+                <section class="widget glass lab" style="--i:9" aria-labelledby="lab-h">
+                  <h2 id="lab-h">In the lab</h2>
+                  <p>More games are being built right now.</p>
+                  <div class="meter" aria-hidden="true"><i></i></div>
+                  <small>New ones land on this home screen first.</small>
+                </section>
+              </div>
+            </section>
+          </div>
         </div>
 
-        <div class="dots" aria-hidden="true"><i></i><i></i></div>
-        <nav class="dock" aria-label="Studio">
-          <button class="app-icon" type="button" style="--i:7" data-open="about" aria-label="About ANTTECH">
+        <div class="dots" id="dots">
+          <button type="button" aria-label="Games page" aria-current="true"></button>
+          <button type="button" aria-label="Studio page" aria-current="false"></button>
+        </div>
+        <nav class="dock glass" aria-label="Studio">
+          <button class="app-icon" type="button" style="--i:10" data-open="about" aria-label="About ANTTECH">
             <span class="tile"><span class="glyph g-about"><img src="assets/anttech-logo.png" alt="" width="64" height="64"></span></span><span class="label">About</span>
           </button>
-          <button class="app-icon" type="button" style="--i:8" data-open="privacy" aria-label="Privacy policies">
+          <button class="app-icon" type="button" style="--i:11" data-open="privacy" aria-label="Privacy policies">
             <span class="tile"><span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span></span><span class="label">Privacy</span>
           </button>
-          <a class="app-icon" style="--i:9" href="mailto:anttech1081@gmail.com" aria-label="Email ANTTECH">
+          <a class="app-icon" style="--i:12" href="mailto:anttech1081@gmail.com" aria-label="Email ANTTECH">
             <span class="tile"><span class="glyph g-mail"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span></span><span class="label">Mail</span>
           </a>
-          <a class="app-icon" style="--i:10" href="https://www.instagram.com/ant_tech_/" aria-label="ANTTECH on Instagram">
+          <a class="app-icon" style="--i:13" href="https://www.instagram.com/ant_tech_/" aria-label="ANTTECH on Instagram">
             <span class="tile"><span class="glyph g-ig"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="6" width="17" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.6"/><path d="M8.5 6 10 3.8h4L15.5 6" stroke-linejoin="round"/></svg></span></span><span class="label">Instagram</span>
           </a>
         </nav>
@@ -411,7 +521,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
           <div class="shots"><img src="assets/games/tat-1.webp" alt="Tap Against Time mid-run, a glowing circle to tap and the score at the top" width="414" height="900" loading="lazy"><img src="assets/games/tat-2.webp" alt="The Tap Against Time main menu" width="414" height="900" loading="lazy"></div>
           <div class="links"><a href="privacy.html">Privacy policy</a></div>
         </div>
-        <button class="close" type="button" aria-label="Close Tap Against Time"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close Tap Against Time"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -426,7 +536,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
           <div class="shots"><img src="assets/games/dockside-1.webp" alt="A Dockside harbour full of boats, with the red boat waiting to get out" width="414" height="900" loading="lazy"><img src="assets/games/dockside-2.webp" alt="Dockside after a harbour is cleared" width="414" height="900" loading="lazy"></div>
           <div class="links"><a href="dockside-privacy.html">Privacy policy</a></div>
         </div>
-        <button class="close" type="button" aria-label="Close Dockside"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close Dockside"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -441,7 +551,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
           <div class="shots"><img src="assets/games/cw-1.webp" alt="A Circuit Weave board with routes filling most of the squares" width="414" height="900" loading="lazy"><img src="assets/games/cw-2.webp" alt="An early 5 by 5 Circuit Weave board, each colour marked with its own shape" width="414" height="900" loading="lazy"></div>
           <div class="links"><a href="circuit-weave-privacy.html">Privacy policy</a></div>
         </div>
-        <button class="close" type="button" aria-label="Close Circuit Weave"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close Circuit Weave"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -456,7 +566,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
           <div class="shots wide"><img src="assets/games/rr-1.webp" alt="Raccoon Raid mid-raid on a beach campsite, a combo banner flashing over the wreckage" width="900" height="414" loading="lazy"><img src="assets/games/rr-2.webp" alt="A Raccoon Raid boss campsite" width="900" height="414" loading="lazy"></div>
           <div class="links"><a href="raccoon-raid-privacy.html">Privacy policy</a></div>
         </div>
-        <button class="close" type="button" aria-label="Close Raccoon Raid"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close Raccoon Raid"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -472,7 +582,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
           <div class="links"><a href="mailto:anttech1081@gmail.com">anttech1081@gmail.com</a><a href="https://www.instagram.com/ant_tech_/">Instagram · @ant_tech_</a></div>
           <p class="fine">© 2026 ANTTECH</p>
         </div>
-        <button class="close" type="button" aria-label="Close About"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close About"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -480,7 +590,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
         <div class="cover"></div>
         <div class="scroll">
           <div class="app-head">
-            <span class="glyph g-privacy" style="width:96px;height:96px;border-radius:22.5%"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
+            <span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
             <div><h2 id="h-priv">Privacy</h2><div class="status-line">Every game's policy in one place</div></div>
           </div>
           <div class="links">
@@ -491,7 +601,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
             <a href="site-privacy.html">This website</a>
           </div>
         </div>
-        <button class="close" type="button" aria-label="Close Privacy"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <button class="close glass" type="button" aria-label="Close Privacy"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
     </div>
@@ -499,26 +609,34 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
 </div>
 
 <script>
-// The home screen. Tap an icon and its app springs open out of the icon; swipe up on the
-// bar (or Esc / ×) and it shrinks back into the icon. Every animation is a spring that
-// starts from where things are right now, so it can be grabbed and reversed mid-flight.
+// The home screen. Apps spring open out of their icons and wobble like jelly; the home
+// screen turns like a cube between its two pages; a dash on the left launches apps on
+// computers. Every motion is a spring that starts from where things are right now, so
+// anything can be grabbed and thrown mid-flight.
 (function () {
   var root = document.documentElement;
   root.classList.add("js");
   var screen = document.getElementById("screen");
+  var phone = document.getElementById("phone");
   var home = document.getElementById("home");
   var dim = document.getElementById("dim");
+  var dash = document.getElementById("dash");
+  var pagesEl = document.getElementById("pages");
+  var cube = document.getElementById("cube");
+  var pageEls = cube.querySelectorAll(".page");
+  var dotBtns = document.querySelectorAll("#dots button");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
   // live clock in the status bar
   var clock = document.getElementById("clock");
-  function tick() { var d = new Date(); clock.textContent = d.getHours() % 12 || 12; clock.textContent += ":" + String(d.getMinutes()).padStart(2, "0"); }
+  function tick() { var d = new Date(); clock.textContent = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0"); }
   tick(); setInterval(tick, 20000);
 
   requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add("ready"); }); });
 
   // ---- spring: damping ratio + response (Apple's two knobs), integrated per frame
-  function Spring(onUpdate) { this.x = 0; this.v = 0; this.target = 0; this.raf = 0; this.onUpdate = onUpdate; }
+  function Spring(onUpdate, x) { this.x = x || 0; this.v = 0; this.target = this.x; this.raf = 0; this.onUpdate = onUpdate; }
   Spring.prototype.to = function (target, opts, done) {
     opts = opts || {};
     this.target = target; if (opts.velocity !== undefined) this.v = opts.velocity;
@@ -529,29 +647,148 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
     function step(now) {
       var dt = Math.min(0.064, (now - last) / 1000); last = now;
       for (var n = 0; n < 4; n++) { var h = dt / 4; var a = -k * (self.x - self.target) - c * self.v; self.v += a * h; self.x += self.v * h; }
-      self.onUpdate(self.x);
       if (Math.abs(self.v) < 0.002 && Math.abs(self.x - self.target) < 0.0015) { self.x = self.target; self.v = 0; self.onUpdate(self.x); if (done) done(); return; }
+      self.onUpdate(self.x);
       self.raf = requestAnimationFrame(step);
     }
     this.raf = requestAnimationFrame(step);
   };
-  Spring.prototype.set = function (x) { cancelAnimationFrame(this.raf); this.x = x; this.v = 0; this.onUpdate(x); };
+  Spring.prototype.set = function (x) { cancelAnimationFrame(this.raf); this.x = x; this.target = x; this.v = 0; this.onUpdate(x); };
+  Spring.prototype.stop = function () { cancelAnimationFrame(this.raf); };
 
   function lerp(a, b, t) { return a + (b - a) * t; }
-  function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
+  function clamp(t, lo, hi) { return t < lo ? lo : t > hi ? hi : t; }
+  function clamp01(t) { return clamp(t, 0, 1); }
 
-  var current = null;   // { app, icon, spring }
+  // ---- glass: the light on each glass panel follows the pointer
+  if (finePointer.matches) {
+    document.addEventListener("pointermove", function (e) {
+      var g = e.target.closest && e.target.closest(".glass");
+      if (!g) return;
+      var r = g.getBoundingClientRect();
+      g.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      g.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+  }
+
+  // ---- the phone tilts toward the pointer, with a glare sliding across the glass
+  var glare = document.getElementById("glare");
+  var tiltX = new Spring(applyTilt), tiltY = new Spring(applyTilt);
+  function applyTilt() {
+    phone.style.transform = (tiltX.x || tiltY.x) ? "perspective(1600px) rotateX(" + tiltX.x.toFixed(3) + "deg) rotateY(" + tiltY.x.toFixed(3) + "deg)" : "";
+    glare.style.setProperty("--gx", (50 + tiltY.x * 12) + "%");
+    glare.style.setProperty("--gy", (20 - tiltX.x * 14) + "%");
+  }
+  if (finePointer.matches) {
+    document.addEventListener("pointermove", function (e) {
+      if (reduce.matches || window.innerWidth <= 760 || dragging) return;
+      var r = phone.getBoundingClientRect();
+      var nx = clamp((e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2), -1, 1);
+      var ny = clamp((e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2), -1, 1);
+      tiltX.to(-ny * 4, { damping: 1, response: 0.7 });
+      tiltY.to(nx * 5, { damping: 1, response: 0.7 });
+    });
+    document.addEventListener("pointerleave", function () { tiltX.to(0, { response: 0.8 }); tiltY.to(0, { response: 0.8 }); });
+  }
+
+  // ---- cube: the two home pages are faces of a cube; drag sideways to turn it
+  var page = 0, dragging = false;
+  var cubeSpring = new Spring(renderCube);
+  function renderCube(p) {
+    var W = pagesEl.clientWidth, r = W / 2;
+    if (p === 0 || p === 1) {
+      cube.style.transform = ""; pagesEl.style.transform = "";
+      pageEls[0].style.transform = ""; pageEls[1].style.transform = "";
+      pageEls[0].style.visibility = p === 0 ? "" : "hidden";
+      pageEls[1].style.visibility = p === 1 ? "" : "hidden";
+      return;
+    }
+    cube.style.transform = "translateZ(" + (-r) + "px) rotateY(" + (-90 * p) + "deg)";
+    pageEls[0].style.transform = "translateZ(" + r + "px)";
+    pageEls[1].style.transform = "rotateY(90deg) translateZ(" + r + "px)";
+    pageEls[0].style.visibility = pageEls[1].style.visibility = "";
+    pagesEl.style.transform = "scale(" + (1 - 0.16 * Math.sin(Math.PI * clamp01(p))) + ")";
+  }
+  function setPage(i, velocity) {
+    page = i;
+    dotBtns.forEach(function (b, n) { b.setAttribute("aria-current", n === i ? "true" : "false"); });
+    pageEls.forEach(function (el, n) { el.inert = n !== i; });
+    if (reduce.matches) cubeSpring.set(i);
+    else cubeSpring.to(i, { damping: 0.82, response: 0.55, velocity: velocity || 0 });
+  }
+  renderCube(0); pageEls[1].inert = true;
+  dotBtns.forEach(function (b, n) { b.addEventListener("click", function () { setPage(n); }); });
+  document.getElementById("spin").addEventListener("click", function () { if (current) close(0); setPage(page ? 0 : 1); });
+  document.addEventListener("keydown", function (e) {
+    if (current || e.target.closest("input, textarea")) return;
+    if (e.key === "ArrowRight" && page === 0) setPage(1);
+    if (e.key === "ArrowLeft" && page === 1) setPage(0);
+  });
+
+  (function () {
+    var x0 = 0, y0 = 0, p0 = 0, id = null, samples = [], suppress = false;
+    pagesEl.addEventListener("pointerdown", function (e) {
+      if (current || e.button > 0) return;
+      id = e.pointerId; x0 = e.clientX; y0 = e.clientY; p0 = cubeSpring.x; dragging = false;
+      samples = [{ x: e.clientX, t: performance.now() }];
+    });
+    pagesEl.addEventListener("pointermove", function (e) {
+      if (e.pointerId !== id) return;
+      var dx = e.clientX - x0, dy = e.clientY - y0;
+      if (!dragging) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+        dragging = true; cubeSpring.stop(); pagesEl.setPointerCapture(id);
+        document.querySelectorAll(".pressed").forEach(function (el) { el.classList.remove("pressed"); });
+      }
+      var W = pagesEl.clientWidth, p = p0 - dx / W;
+      if (p < 0) p = p * 0.3; else if (p > 1) p = 1 + (p - 1) * 0.3;   // rubber band at the ends
+      cubeSpring.x = p; renderCube(p);
+      samples.push({ x: e.clientX, t: performance.now() }); if (samples.length > 6) samples.shift();
+    });
+    function end(e) {
+      if (e.pointerId !== id) return;
+      id = null;
+      if (!dragging) return;
+      dragging = false; suppress = true; setTimeout(function () { suppress = false; }, 0);
+      var a = samples[0], b = samples[samples.length - 1];
+      var vx = (b.x - a.x) / Math.max(1, b.t - a.t) * 1000, W = pagesEl.clientWidth, pv = -vx / W;
+      var aim = Math.round(clamp(cubeSpring.x + pv * 0.18, 0, 1));
+      setPage(aim, pv);
+    }
+    pagesEl.addEventListener("pointerup", end);
+    pagesEl.addEventListener("pointercancel", end);
+    pagesEl.addEventListener("click", function (e) { if (suppress) { e.stopPropagation(); e.preventDefault(); } }, true);
+  })();
+
+  // ---- apps: open out of the icon, close back into it, wobble like jelly
+  var current = null;   // { app, icon, rect, spring }
   var screenR = function () { return parseFloat(getComputedStyle(screen).getPropertyValue("--screen-r")) || 0; };
+
+  // wobble: squash/stretch, sideways drift and skew, each its own loose spring
+  var wob = { sq: new Spring(applyWob), tx: new Spring(applyWob), sk: new Spring(applyWob) };
+  function applyWob() {
+    if (!current) return;
+    var s = wob.sq.x;
+    current.app.style.transform = (s || wob.tx.x || wob.sk.x)
+      ? "translateX(" + wob.tx.x.toFixed(2) + "px) skewX(" + wob.sk.x.toFixed(3) + "deg) scale(" + (1 + s).toFixed(4) + "," + (1 - s).toFixed(4) + ")"
+      : "";
+  }
+  function jiggle(v) {
+    if (reduce.matches) return;
+    wob.sq.to(0, { damping: 0.3, response: 0.42, velocity: v });
+  }
 
   function iconRect(icon) {
     var s = screen.getBoundingClientRect();
     var t = (icon.querySelector(".tile") || icon.querySelector("img") || icon).getBoundingClientRect();
-    return { x: t.left - s.left, y: t.top - s.top, w: t.width, h: t.height, W: s.width, H: s.height, r: Math.min(t.width, t.height) * 0.225 };
+    // the screen may be tilted; measure in its own (untilted) space
+    var k = screen.offsetWidth / s.width || 1;
+    return { x: (t.left - s.left) * k, y: (t.top - s.top) * k, w: t.width * k, h: t.height * k, W: screen.offsetWidth, H: screen.offsetHeight, r: Math.min(t.width, t.height) * k * 0.225 };
   }
 
   // p: 0 = sitting in its icon, 1 = full screen
   function render(app, rect, p) {
-    var q = Math.max(0, p);       // overshoot allowed above 1, not below 0
+    var q = Math.max(0, p);
     var top = lerp(rect.y, 0, q), left = lerp(rect.x, 0, q);
     var right = lerp(rect.W - rect.x - rect.w, 0, q), bottom = lerp(rect.H - rect.y - rect.h, 0, q);
     var r = lerp(rect.r, screenR(), clamp01(q));
@@ -562,23 +799,33 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
     sc.style.transformOrigin = (rect.x + rect.w / 2) + "px " + (rect.y + rect.h / 2) + "px";
     sc.style.transform = "scale(" + lerp(0.86, 1, clamp01(p)) + ")";
     home.style.transform = "scale(" + lerp(1, 0.9, clamp01(p)) + ")";
-    dim.style.opacity = String(0.45 * clamp01(p));
+    dim.style.opacity = String(0.3 * clamp01(p));
+  }
+
+  function phoneIcon(id) {
+    return screen.querySelector('.app-icon[data-open="' + id + '"]') || screen.querySelector('[data-open="' + id + '"]');
+  }
+  function pageOf(el) { var pg = el && el.closest(".page"); return pg ? Array.prototype.indexOf.call(pageEls, pg) : -1; }
+  function markRunning() {
+    dash.querySelectorAll("[data-open]").forEach(function (b) { b.classList.toggle("running", !!current && b.getAttribute("data-open") === current.app.id); });
   }
 
   function open(id, icon, instant) {
     var app = document.getElementById(id);
     if (!app || !app.classList.contains("app")) return;
-    if (current && current.app !== app) { finish(current); }
-    icon = icon || document.querySelector('[data-open="' + id + '"]');
-    var rect = iconRect(icon);
-    var c = current && current.app === app ? current : { app: app, icon: icon, rect: rect };
-    c.rect = rect;
+    if (current && current.app !== app) finish(current);
+    icon = icon || phoneIcon(id);
+    var pg = pageOf(icon);
+    if (pg >= 0 && pg !== page) { page = pg; cubeSpring.set(pg); setPage(pg); }
+    var c = current && current.app === app ? current : { app: app, icon: icon };
+    c.rect = iconRect(icon);
     if (!c.spring) c.spring = new Spring(function (p) { render(app, c.rect, p); });
     current = c;
     app.classList.add("open");
-    app.scrollTop = 0; app.querySelector(".scroll").scrollTop = 0;
-    if (instant || reduce.matches) { c.spring.set(1); }
-    else c.spring.to(1, { damping: 0.86, response: 0.46 });
+    app.querySelector(".scroll").scrollTop = 0;
+    if (instant || reduce.matches) c.spring.set(1);
+    else { c.spring.to(1, { damping: 0.86, response: 0.46 }); jiggle(-0.55); }
+    markRunning();
     if (location.hash !== "#" + id) history.pushState({ app: id }, "", "#" + id);
     setTimeout(function () { app.querySelector(".close").focus({ preventScroll: true }); }, instant ? 0 : 280);
   }
@@ -587,23 +834,38 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
     if (!current) return;
     var c = current;
     c.rect = iconRect(c.icon);
+    wob.tx.to(0, { damping: 0.45, response: 0.5 }); wob.sk.to(0, { damping: 0.4, response: 0.45 });
     if (reduce.matches) { c.spring.set(0); finish(c); }
-    else c.spring.to(0, { damping: 1, response: 0.36, velocity: velocity }, function () { finish(c); });
+    else { c.spring.to(0, { damping: 1, response: 0.36, velocity: velocity }, function () { finish(c); }); jiggle(0.45); }
     if (location.hash) history.pushState({}, "", location.pathname);
   }
 
   function finish(c) {
     c.spring.set(0);
     c.app.classList.remove("open");
+    c.app.style.transform = "";
     home.style.transform = ""; dim.style.opacity = "0";
-    if (current === c) { current = null; c.icon && c.icon.focus({ preventScroll: true }); }
+    if (current === c) {
+      current = null;
+      wob.sq.set(0); wob.tx.set(0); wob.sk.set(0);
+      c.icon && c.icon.focus({ preventScroll: true });
+    }
+    markRunning();
   }
 
   // icons: feedback on press-down, open on tap
   document.querySelectorAll("[data-open]").forEach(function (icon) {
     icon.addEventListener("pointerdown", function () { icon.classList.add("pressed"); });
     ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) { icon.addEventListener(ev, function () { icon.classList.remove("pressed"); }); });
-    icon.addEventListener("click", function () { open(icon.getAttribute("data-open"), icon); });
+    icon.addEventListener("click", function () {
+      var id = icon.getAttribute("data-open");
+      if (icon.closest(".dash")) {
+        if (!reduce.matches) icon.querySelector(".tile").animate(
+          [{ transform: "translateX(0)" }, { transform: "translateX(14px)" }, { transform: "translateX(0)" }, { transform: "translateX(7px)" }, { transform: "translateX(0)" }],
+          { duration: 620, easing: "ease-out" });
+        open(id, null);
+      } else open(id, icon);
+    });
   });
   document.querySelectorAll(".app .close").forEach(function (b) { b.addEventListener("click", function () { close(0); }); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && current) close(0); });
@@ -612,15 +874,30 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
     if (id && document.getElementById(id)) open(id, null); else if (current) close(0);
   });
 
-  // swipe up on the bar to go home: the app follows the finger and shrinks toward its icon,
-  // then the spring takes over at the finger's speed
+  // dash: icons swell as the pointer passes, like a dock
+  if (finePointer.matches) {
+    var dashIcons = dash.querySelectorAll(".app-icon");
+    dash.addEventListener("pointermove", function (e) {
+      if (reduce.matches) return;
+      var top = dash.getBoundingClientRect().top;
+      dashIcons.forEach(function (it) {
+        var cy = it.offsetTop + it.offsetHeight / 2, d = Math.abs(e.clientY - top - cy);
+        it.style.setProperty("--s", (1 + 0.4 * Math.cos(Math.min(d / 130, 1) * Math.PI / 2)).toFixed(3));
+      });
+    });
+    dash.addEventListener("pointerleave", function () { dashIcons.forEach(function (it) { it.style.setProperty("--s", 1); }); });
+  }
+
+  // swipe up on the bar to go home: the window follows the finger, shrinks toward its icon
+  // and wobbles sideways with the drag, then springs take over at the finger's speed
   document.querySelectorAll(".app .bar").forEach(function (bar) {
-    var startY = 0, startP = 1, samples = [];
+    var startY = 0, startX = 0, startP = 1, samples = [];
     bar.addEventListener("pointerdown", function (e) {
       if (!current) return;
       bar.setPointerCapture(e.pointerId);
-      cancelAnimationFrame(current.spring.raf);
-      startY = e.clientY; startP = current.spring.x; samples = [{ y: e.clientY, t: performance.now() }];
+      current.spring.stop(); wob.tx.stop(); wob.sk.stop();
+      startY = e.clientY; startX = e.clientX; startP = current.spring.x;
+      samples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
     });
     bar.addEventListener("pointermove", function (e) {
       if (!current || !bar.hasPointerCapture(e.pointerId)) return;
@@ -628,22 +905,33 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover { 
       var p = startP + (e.clientY - startY) / span;   // up = smaller
       current.spring.x = Math.min(1.04, p); current.spring.v = 0;
       render(current.app, current.rect, current.spring.x);
-      samples.push({ y: e.clientY, t: performance.now() }); if (samples.length > 6) samples.shift();
+      samples.push({ x: e.clientX, y: e.clientY, t: performance.now() }); if (samples.length > 6) samples.shift();
+      if (!reduce.matches) {
+        var a = samples[0], b = samples[samples.length - 1], vx = (b.x - a.x) / Math.max(1, b.t - a.t) * 1000;
+        wob.tx.x = (e.clientX - startX) * 0.35; wob.sk.x = clamp(-vx * 0.006, -9, 9);
+        applyWob();
+      }
     });
     bar.addEventListener("pointerup", function (e) {
       if (!current || !bar.hasPointerCapture(e.pointerId)) return;
       bar.releasePointerCapture(e.pointerId);
       var a = samples[0], b = samples[samples.length - 1], dt = Math.max(1, b.t - a.t);
-      var vy = (b.y - a.y) / dt * 1000;                  // px/s, negative = flick up
-      var span = current.rect.H * 0.55, pv = vy / span; // progress per second
+      var vy = (b.y - a.y) / dt * 1000;
+      var span = current.rect.H * 0.55, pv = vy / span;
       var moved = startP - current.spring.x;
       if (vy < -350 || current.spring.x < 0.72 || (moved < 0.02 && Math.abs(vy) < 60)) close(pv);
-      else current.spring.to(1, { damping: 0.86, response: 0.4, velocity: pv });
+      else {
+        current.spring.to(1, { damping: 0.86, response: 0.4, velocity: pv });
+        wob.tx.to(0, { damping: 0.35, response: 0.5 }); wob.sk.to(0, { damping: 0.3, response: 0.45 });
+      }
     });
   });
 
-  // keep the open app sized right if the window changes
-  window.addEventListener("resize", function () { if (current) { current.rect = iconRect(current.icon); render(current.app, current.rect, current.spring.x); } });
+  // keep things sized right if the window changes
+  window.addEventListener("resize", function () {
+    renderCube(cubeSpring.x);
+    if (current) { current.rect = iconRect(current.icon); render(current.app, current.rect, current.spring.x); }
+  });
 
   // deep links: blackantm2.github.io/#raccoon-raid opens that app
   var start = location.hash.slice(1);
