@@ -10,6 +10,7 @@
 <meta property="og:description" content="Small games. Finished. Free on iPhone.">
 <meta property="og:image" content="https://blackantm2.github.io/assets/games/tat-icon.webp">
 <link rel="icon" href="assets/anttech-logo.png">
+<link rel="apple-touch-icon" href="assets/anttech-logo.png">
 <link rel="preload" href="assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face {
@@ -84,12 +85,15 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 .intro p { margin: 14px 0 0; max-width: 34ch; color: var(--ink-soft); font-size: 1.05rem; }
 
 /* The shelf */
-.shelf { position: relative; padding-top: 22px; }
+/* Desktop: two shelf rows sit side by side and read as one long plank of four.
+   Phones: they stack into two shelves of two, so each cartridge is big enough to read. */
+.shelf { --cart-gap: clamp(10px, 2.6vw, 28px); position: relative; padding-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.shelf-row { display: grid; }
 .carts {
   position: relative; z-index: 1;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(8px, 2.6vw, 28px);
-  padding-inline: clamp(4px, 2vw, 24px);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cart-gap);
+  padding-inline: calc(var(--cart-gap) / 2);
   margin: 0; list-style: none;
 }
 .slot { display: grid; justify-items: center; }
@@ -147,6 +151,7 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 /* The ledge the cartridges stand in. Its front face hides their feet. */
 .ledge {
   position: relative; z-index: 2;
+  border-radius: 0 !important;
   height: clamp(34px, 7vw, 50px);
   margin-top: clamp(-30px, -5vw, -20px);
   background: linear-gradient(180deg, var(--ply) 0 70%, var(--ply-edge) 70% 100%);
@@ -155,7 +160,12 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 }
 
 /* Price tags hanging under the ledge. One primary style for the whole page. */
-.tags { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 2.6vw, 28px); padding-inline: clamp(4px, 2vw, 24px); }
+.shelf-row:first-child .ledge { border-radius: 4px 0 0 4px !important; }
+.shelf-row:last-child .ledge { border-radius: 0 4px 4px 0 !important; }
+/* overlap the two planks a hair so the join is invisible */
+.shelf-row:first-child .ledge { margin-right: -3px; clip-path: inset(0 0 -40px -40px); }
+.shelf-row:last-child .ledge { margin-left: -3px; z-index: 1; clip-path: inset(0 -40px -40px 0); }
+.tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cart-gap); padding-inline: calc(var(--cart-gap) / 2); }
 .tag-hang { display: grid; justify-items: center; }
 .tag-hang::before { content: ""; width: 2px; height: 14px; background: var(--ply-edge); }
 .tag {
@@ -209,10 +219,13 @@ footer .legal { margin: 0; color: var(--ink-soft); }
   .game-head { padding-top: 12px; }
 }
 
-/* Four cartridges on a phone: tighter tags so every label fits. */
-@media (max-width: 440px) {
-  .tags .tag { padding: 0.55em 0.45em 0.55em 1.05em; font-size: 0.74rem; }
-  .tags .tag::before { left: 0.36em; width: 5px; height: 5px; margin-top: -2.5px; }
+/* Phones: two shelves of two. Bigger cartridges, readable names, roomy tags. */
+@media (max-width: 600px) {
+  .shelf { grid-template-columns: minmax(0, 1fr); row-gap: 30px; --cart-gap: clamp(18px, 6vw, 32px); }
+  .shelf-row .ledge, .shelf-row:first-child .ledge, .shelf-row:last-child .ledge { border-radius: 4px !important; margin-inline: 0; clip-path: none; }
+  .carts, .tags { padding-inline: clamp(12px, 5vw, 28px); }
+  .cart .name { font-size: clamp(0.95rem, 4.6vw, 1.2rem); }
+  .tag { font-size: 0.95rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -235,34 +248,43 @@ footer .legal { margin: 0; color: var(--ink-soft); }
     </section>
 
     <section class="shelf" aria-label="Games">
-      <ul class="carts">
-        <li class="slot">
-          <button class="cart" type="button" data-game="tat" aria-pressed="true" aria-controls="game-tat">
-            <span class="sticker"><img class="art" src="assets/games/tat-icon.webp" alt="" width="128" height="128"><span class="name">Tap Against Time</span></span>
-          </button>
-        </li>
-        <li class="slot">
-          <button class="cart" type="button" data-game="dockside" aria-pressed="false" aria-controls="game-dockside">
-            <span class="sticker"><img class="art" src="assets/games/dockside-icon.webp" alt="" width="128" height="128"><span class="name">Dockside: Cast Off</span></span>
-          </button>
-        </li>
-        <li class="slot">
-          <button class="cart" type="button" data-game="cw" aria-pressed="false" aria-controls="game-cw">
-            <span class="sticker"><img class="art" src="assets/games/cw-icon.webp" alt="" width="128" height="128"><span class="name">Circuit Weave</span></span>
-          </button>
-        </li>
-        <li class="slot">
-          <button class="cart" type="button" data-game="rr" aria-pressed="false" aria-controls="game-rr">
-            <span class="sticker"><img class="art" src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="name">Raccoon Raid</span></span>
-          </button>
-        </li>
-      </ul>
-      <div class="ledge" aria-hidden="true"></div>
-      <div class="tags">
-        <div class="tag-hang"><a class="tag" href="https://apps.apple.com/app/id6755980854">Get · Free</a></div>
-        <div class="tag-hang"><span class="tag is-waiting">In review</span></div>
-        <div class="tag-hang"><span class="tag is-waiting">In review</span></div>
-        <div class="tag-hang"><span class="tag is-waiting">In testing</span></div>
+      <div class="shelf-row">
+        <ul class="carts">
+          <li class="slot">
+            <button class="cart" type="button" data-game="tat" aria-pressed="true" aria-controls="game-tat">
+              <span class="sticker"><img class="art" src="assets/games/tat-icon.webp" alt="" width="128" height="128"><span class="name">Tap Against Time</span></span>
+            </button>
+          </li>
+          <li class="slot">
+            <button class="cart" type="button" data-game="dockside" aria-pressed="false" aria-controls="game-dockside">
+              <span class="sticker"><img class="art" src="assets/games/dockside-icon.webp" alt="" width="128" height="128"><span class="name">Dockside: Cast Off</span></span>
+            </button>
+          </li>
+        </ul>
+        <div class="ledge" aria-hidden="true"></div>
+        <div class="tags">
+          <div class="tag-hang"><a class="tag" href="https://apps.apple.com/app/id6755980854">Get · Free</a></div>
+          <div class="tag-hang"><span class="tag is-waiting">In review</span></div>
+        </div>
+      </div>
+      <div class="shelf-row">
+        <ul class="carts">
+          <li class="slot">
+            <button class="cart" type="button" data-game="cw" aria-pressed="false" aria-controls="game-cw">
+              <span class="sticker"><img class="art" src="assets/games/cw-icon.webp" alt="" width="128" height="128"><span class="name">Circuit Weave</span></span>
+            </button>
+          </li>
+          <li class="slot">
+            <button class="cart" type="button" data-game="rr" aria-pressed="false" aria-controls="game-rr">
+              <span class="sticker"><img class="art" src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="name">Raccoon Raid</span></span>
+            </button>
+          </li>
+        </ul>
+        <div class="ledge" aria-hidden="true"></div>
+        <div class="tags">
+          <div class="tag-hang"><span class="tag is-waiting">In review</span></div>
+          <div class="tag-hang"><span class="tag is-waiting">In testing</span></div>
+        </div>
       </div>
     </section>
 
