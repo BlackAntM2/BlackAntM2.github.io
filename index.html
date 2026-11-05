@@ -435,7 +435,12 @@ button { font: inherit; color: inherit; }
 .shots video { flex: 0 0 auto; width: 92%; height: auto; aspect-ratio: 960 / 443; border-radius: 18px; scroll-snap-align: start; background: #000; object-fit: cover; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1); }
 
 /* ---------- Tap Against Time, playable ---------- */
-.get-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.get-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.get-row .get { margin-top: 0; }
+.badge-link { display: inline-flex; border-radius: 8px; transition: transform 120ms var(--ease-out); }
+.badge-link:active { transform: scale(0.95); }
+.badge-link img { display: block; height: 40px; width: auto; }
+.mini-btns { align-items: center; }
 .get.play { border: 0; cursor: pointer; background: #33e9ff; color: #1b1036; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 6px 18px -6px rgb(51 233 255 / 0.7); }
 .get.ghost { background: rgb(255 255 255 / 0.1); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18); }
 .mini {
@@ -693,7 +698,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
         <div class="scroll">
           <div class="app-head">
             <img src="assets/games/tat-icon.webp" alt="" width="96" height="96">
-            <div><h2 id="h-tat">Tap Against Time</h2><div class="status-line">Free on iPhone</div><div class="get-row"><a class="get" href="https://apps.apple.com/app/id6755980854">GET</a><button class="get play" type="button" id="play-tat">PLAY HERE</button></div></div>
+            <div><h2 id="h-tat">Tap Against Time</h2><div class="status-line">Free on iPhone</div><div class="get-row"><a class="badge-link" href="https://apps.apple.com/app/id6755980854"><img src="assets/app-store-badge.svg" alt="Download on the App Store" width="120" height="40"></a><button class="get play" type="button" id="play-tat">PLAY HERE</button></div></div>
           </div>
           <p class="about-text">Tap the circle before it disappears. Every tap gives you a little less time, and one miss ends the run.</p>
           <div class="shots"><img src="assets/games/tat-1.webp" alt="Tap Against Time mid-run, a glowing circle to tap and the score at the top" width="414" height="900" loading="lazy"><img src="assets/games/tat-2.webp" alt="The Tap Against Time main menu" width="414" height="900" loading="lazy"></div>
@@ -705,7 +710,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
           <div class="mini-best">BEST <span id="mini-best">0</span></div>
           <div class="mini-time"><i id="mini-bar"></i></div>
           <div class="mini-field" id="mini-field"><button class="mini-dot" type="button" id="mini-dot" aria-label="Tap the circle"></button><p class="mini-tip">Tap the circle to start</p></div>
-          <div class="mini-over" role="group" aria-label="Round over"><p class="mini-why" id="mini-why">Too slow!</p><b class="mini-final" id="mini-final">0</b><small id="mini-note">Best 0</small><div class="mini-btns"><button class="get play" type="button" id="mini-again">PLAY AGAIN</button><a class="get ghost" href="https://apps.apple.com/app/id6755980854">GET THE GAME</a></div></div>
+          <div class="mini-over" role="group" aria-label="Round over"><p class="mini-why" id="mini-why">Too slow!</p><b class="mini-final" id="mini-final">0</b><small id="mini-note">Best 0</small><div class="mini-btns"><button class="get play" type="button" id="mini-again">PLAY AGAIN</button><a class="badge-link" href="https://apps.apple.com/app/id6755980854"><img src="assets/app-store-badge.svg" alt="Download on the App Store" width="120" height="40"></a></div></div>
         </div>
         <button class="close glass" type="button" aria-label="Close Tap Against Time"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>

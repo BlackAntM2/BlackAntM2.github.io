@@ -9,7 +9,7 @@ The studio site is an iPhone home screen. On a computer a phone sits on the page
 - **Dash (≥1100px):** a GNOME-style glass dock down the left edge with the four games, About and Privacy. Icons swell as the pointer passes, show a name tip, bounce when launched, and get a dot while their app is open. The nine-dot button turns the home screen.
 - **Home screen, page 1:** a studio widget, a "NEW" feature widget for the latest game, the four game icons, a Release board widget (status pills: green live, amber in review, orange in testing), page dots, and a glass dock (About, Privacy, Mail, Instagram) using our own glyphs, not brand logos.
 - **Home screen, page 2:** Instagram and Mail widgets and an "In the lab" widget (never name unannounced games).
-- **Apps:** App Store–style pages: icon, name, status, a blue GET button only for downloadable games (grey "Coming…" pill otherwise), description, screenshots, privacy link.
+- **Apps:** App Store–style pages: icon, name, status, Apple's official black "Download on the App Store" badge (`assets/app-store-badge.svg`, 40px tall, unmodified) only for downloadable games (grey "Coming…" pill otherwise), description, screenshots, privacy link.
 - **Ink:** `--ink #f5f3ee`, `--ink-soft #b9b6ae`.
 
 ## Type
@@ -31,7 +31,7 @@ The studio site is an iPhone home screen. On a computer a phone sits on the page
 ## Rules
 - Keep the Apple trademark line (pitch + About app). Our own glyphs only: never Apple's logo, the official App Store badge art redrawn, or Apple's own app icons.
 - Lock screen once per browser session (sessionStorage), skipped for deep links. Banners: at most 3 per visit, never while an app or search is open.
-- A game that can't be downloaded yet never gets a GET button.
+- A game that can't be downloaded yet never gets the App Store badge. Never redraw, recolour or crop the badge; get it from toolbox.marketingtools.apple.com.
 - Never invent ratings, download counts or quotes.
 - Without JavaScript every app page shows in full under the home screen.
 - Deep links: `/#tap-against-time`, `/#dockside`, `/#circuit-weave`, `/#raccoon-raid`, `/#about`, `/#privacy`.
