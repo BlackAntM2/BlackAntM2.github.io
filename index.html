@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ANTTECH · small iPhone games</title>
-<meta name="description" content="Small, finished, free iPhone games made by one developer: Tap Against Time, Dockside: Cast Off and Circuit Weave.">
+<meta name="description" content="Small, finished, free iPhone games made by one developer: Tap Against Time, Dockside: Cast Off, Circuit Weave and Raccoon Raid.">
 <meta name="theme-color" content="#141413">
 <meta property="og:title" content="ANTTECH">
 <meta property="og:description" content="Small games. Finished. Free on iPhone.">
@@ -36,6 +36,7 @@
   --cart-tat: #4b2a8c;
   --cart-dock: #178f92;
   --cart-cw: #5a626e;
+  --cart-rr: #b5531f;
   --tag: #fbf7ee;
   --tag-ink: #161615;
   --focus: #fbf7ee;
@@ -86,8 +87,8 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 .shelf { position: relative; padding-top: 22px; }
 .carts {
   position: relative; z-index: 1;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 3vw, 28px);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 2.6vw, 28px);
   padding-inline: clamp(4px, 2vw, 24px);
   margin: 0; list-style: none;
 }
@@ -115,6 +116,7 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 }
 .cart[data-game="dockside"] { --body-c: var(--cart-dock); }
 .cart[data-game="cw"] { --body-c: var(--cart-cw); }
+.cart[data-game="rr"] { --body-c: var(--cart-rr); }
 /* Grip ridges across the top of the shell. */
 .cart::before {
   content: ""; position: absolute; left: 14%; right: 14%; top: 5%; height: 9%;
@@ -153,7 +155,7 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1.
 }
 
 /* Price tags hanging under the ledge. One primary style for the whole page. */
-.tags { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 3vw, 28px); padding-inline: clamp(4px, 2vw, 24px); }
+.tags { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 2.6vw, 28px); padding-inline: clamp(4px, 2vw, 24px); }
 .tag-hang { display: grid; justify-items: center; }
 .tag-hang::before { content: ""; width: 2px; height: 14px; background: var(--ply-edge); }
 .tag {
@@ -182,6 +184,9 @@ a.tag:active { transform: translateY(2px); }
 .game-head .status { display: inline-block; margin-top: 10px; font-weight: 700; font-size: 0.95rem; }
 .game-head p { margin: 10px 0 0; max-width: var(--measure); }
 .shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(10px, 3vw, 20px); max-width: 560px; margin: 0; padding: 0; list-style: none; }
+/* Landscape games (Raccoon Raid) show one wide screenshot per row. */
+.shots.wide { grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+.shots.wide img { aspect-ratio: 900 / 414; }
 .shots img { display: block; width: 100%; height: auto; aspect-ratio: 414 / 900; object-fit: cover; border-radius: 18px; background: #000; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08), 0 16px 26px -14px rgb(0 0 0 / 0.9); }
 .game-links { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
 .game-links .small { font-size: 0.95rem; }
@@ -202,6 +207,12 @@ footer .legal { margin: 0; color: var(--ink-soft); }
 @media (min-width: 760px) {
   .game { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; column-gap: 48px; }
   .game-head { padding-top: 12px; }
+}
+
+/* Four cartridges on a phone: tighter tags so every label fits. */
+@media (max-width: 440px) {
+  .tags .tag { padding: 0.55em 0.45em 0.55em 1.05em; font-size: 0.74rem; }
+  .tags .tag::before { left: 0.36em; width: 5px; height: 5px; margin-top: -2.5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -240,12 +251,18 @@ footer .legal { margin: 0; color: var(--ink-soft); }
             <span class="sticker"><img class="art" src="assets/games/cw-icon.webp" alt="" width="128" height="128"><span class="name">Circuit Weave</span></span>
           </button>
         </li>
+        <li class="slot">
+          <button class="cart" type="button" data-game="rr" aria-pressed="false" aria-controls="game-rr">
+            <span class="sticker"><img class="art" src="assets/games/rr-icon.webp" alt="" width="128" height="128"><span class="name">Raccoon Raid</span></span>
+          </button>
+        </li>
       </ul>
       <div class="ledge" aria-hidden="true"></div>
       <div class="tags">
         <div class="tag-hang"><a class="tag" href="https://apps.apple.com/app/id6755980854">Get · Free</a></div>
         <div class="tag-hang"><span class="tag is-waiting">In review</span></div>
         <div class="tag-hang"><span class="tag is-waiting">In the works</span></div>
+        <div class="tag-hang"><span class="tag is-waiting">In testing</span></div>
       </div>
     </section>
 
@@ -293,6 +310,22 @@ footer .legal { margin: 0; color: var(--ink-soft); }
           <li><img src="assets/games/cw-2.webp" alt="An early 5 by 5 Circuit Weave board, each colour marked with its own shape" width="414" height="900" loading="lazy"></li>
         </ul>
       </article>
+
+      <article class="game" id="game-rr">
+        <div class="game-head">
+          <h2>Raccoon Raid: Campsite Chaos</h2>
+          <span class="status">In testing</span>
+          <p>Load a raccoon into the slingshot and wreck the campsite. Raid coolers, pull off snack heists, wake the bear and take down the Ranger. 60 campsites across four worlds.</p>
+        </div>
+        <ul class="shots wide">
+          <li><img src="assets/games/rr-1.webp" alt="Raccoon Raid mid-raid on a beach campsite, a combo banner flashing over the wreckage" width="900" height="414" loading="lazy"></li>
+          <li><img src="assets/games/rr-2.webp" alt="A Raccoon Raid boss campsite" width="900" height="414" loading="lazy"></li>
+        </ul>
+        <div class="game-links">
+          <span class="tag is-waiting">Coming to the App Store</span>
+          <a class="small" href="raccoon-raid-privacy.html">Privacy policy</a>
+        </div>
+      </article>
     </section>
 
     <section class="studio" aria-labelledby="studio">
@@ -307,6 +340,7 @@ footer .legal { margin: 0; color: var(--ink-soft); }
       <li><a href="privacy.html">Tap Against Time privacy</a></li>
       <li><a href="dockside-privacy.html">Dockside privacy</a></li>
       <li><a href="circuit-weave-privacy.html">Circuit Weave privacy</a></li>
+      <li><a href="raccoon-raid-privacy.html">Raccoon Raid privacy</a></li>
       <li><a href="site-privacy.html">Website privacy</a></li>
       <li><a href="https://www.instagram.com/ant_tech_/">Instagram</a></li>
     </ul>

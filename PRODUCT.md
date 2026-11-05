@@ -24,8 +24,8 @@ Hosted on GitHub Pages at blackantm2.github.io (static HTML/CSS, no build step, 
 
 ## Capabilities and Constraints
 
-- Games shown: Tap Against Time (live, App Store id6755980854), Dockside: Cast Off (in App Review, id6827859226; its link works once Apple approves), Circuit Weave (in development, no download link yet). Star Blaster is deliberately not shown.
-- These URLs must keep working because App Store listings and AdMob point at them: `/privacy.html` (Tap Against Time policy), `/dockside-privacy.html`, `/site-privacy.html`, `/app-ads.txt`, `/games.html` (Instagram bio link), `/promo/**` (videos used by scheduled Instagram posts).
+- Games shown: Tap Against Time (live, App Store id6755980854), Dockside: Cast Off (in App Review, id6827859226; its link works once Apple approves), Circuit Weave (in development, no download link yet), Raccoon Raid: Campsite Chaos (in TestFlight testing, App Store Apple ID 6830788162; not downloadable yet). Star Blaster is deliberately not shown.
+- These URLs must keep working because App Store listings and AdMob point at them: `/privacy.html` (Tap Against Time policy), `/dockside-privacy.html`, `/raccoon-raid-privacy.html` (Raccoon Raid App Store privacy policy), `/site-privacy.html`, `/app-ads.txt`, `/games.html` (Instagram bio link), `/promo/**` (videos used by scheduled Instagram posts).
 - Contact: anttech1081@gmail.com.
 
 ## Brand Commitments
