@@ -17,6 +17,10 @@ The studio site is an iPhone home screen. On a computer a phone sits on the page
 - Body: the platform UI stack.
 
 ## Motion
+- Lock screen: swipe up (or tap / Enter); it slides up as the home screen zooms in from 1.12. Notes on it open their app.
+- Dynamic Island (computers): peeks open with the game in testing, then settles into a compact live activity; tap to peek, tap again to open.
+- Spotlight: pull down on the home screen, press / or Cmd/Ctrl+K, or the dash's search button.
+- Tap Against Time is playable inside its app (PLAY HERE); best score in localStorage.
 - Open/close is a JS spring on one progress value (damping 0.86 / response 0.46 open, 1.0 / 0.36 close): clip-path grows from the icon rect, the icon art cross-fades out, the home screen scales to 0.9 and dims. Interruptible; a swipe hands its velocity to the spring.
 - The two home pages are faces of a cube: drag sideways (or the dots, arrow keys, the dash's nine-dot button) and it rotates with a slight zoom-out, rubber-banding at the ends.
 - Wobbly windows: apps squash and stretch as they open and close, and drift and skew with a sideways drag on the home bar, on loose springs (damping 0.3–0.45).
@@ -25,6 +29,8 @@ The studio site is an iPhone home screen. On a computer a phone sits on the page
 - `prefers-reduced-motion`: apps open and close instantly, wallpaper, stagger, light sweep, wobble, tilt and magnification stop; the cube switches instantly.
 
 ## Rules
+- Keep the Apple trademark line (pitch + About app). Our own glyphs only: never Apple's logo, the official App Store badge art redrawn, or Apple's own app icons.
+- Lock screen once per browser session (sessionStorage), skipped for deep links. Banners: at most 3 per visit, never while an app or search is open.
 - A game that can't be downloaded yet never gets a GET button.
 - Never invent ratings, download counts or quotes.
 - Without JavaScript every app page shows in full under the home screen.

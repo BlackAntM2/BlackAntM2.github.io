@@ -90,6 +90,7 @@ button { font: inherit; color: inherit; }
 .pitch .hint::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 4px rgb(61 220 132 / 0.2); }
 .pitch .links { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.92rem; color: var(--ink-soft); }
 .pitch .links a { padding-block: 6px; }
+.pitch .legal { margin-top: 28px; max-width: 46ch; font-size: 0.74rem; line-height: 1.5; color: rgb(185 182 174 / 0.7); }
 
 /* ---------- The dash (computers): a glass dock down the left edge ---------- */
 .dash {
@@ -142,7 +143,6 @@ button { font: inherit; color: inherit; }
   background: #101014;
   isolation: isolate;
 }
-.camera { position: absolute; top: 11px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 20px; background: #000; z-index: 60; }
 .glare { position: absolute; inset: 0; z-index: 59; pointer-events: none; border-radius: inherit; background: radial-gradient(600px circle at var(--gx, 30%) var(--gy, 0%), rgb(255 255 255 / 0.07), transparent 55%); }
 
 /* Wallpaper: slow drifting light in each game's colour. */
@@ -341,13 +341,158 @@ button { font: inherit; color: inherit; }
 .app h3 { margin: 26px 0 0; font: 800 1.15rem/1.1 var(--display); font-stretch: 85%; }
 .app .fine { color: var(--ink-soft); font-size: 0.85rem; margin-top: 18px; }
 
+
+/* ---------- Dynamic Island: a live activity for whatever's in testing ---------- */
+.island {
+  position: absolute; top: 11px; left: 50%; z-index: 60;
+  width: 92px; height: 26px; padding: 0; border: 0; border-radius: 20px;
+  background: #000; overflow: hidden; cursor: pointer;
+  transform: translateX(-50%);
+  transition: width 560ms var(--spring), height 560ms var(--spring), border-radius 560ms var(--spring), top 560ms var(--spring);
+}
+.island.compact { width: 132px; }
+.island.expanded { width: 346px; height: 74px; border-radius: 38px; top: 9px; }
+.isl-compact, .isl-full { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; transition: opacity 180ms; pointer-events: none; }
+.isl-compact { justify-content: space-between; padding: 0 9px 0 4px; }
+.isl-compact img { width: 20px; height: 20px; border-radius: 6px; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff8a3d; box-shadow: 0 0 8px #ff8a3d; animation: pulse 1.6s ease-in-out infinite; }
+.island.compact .isl-compact { opacity: 1; transition-delay: 200ms; }
+.isl-full { padding: 0 20px 0 13px; gap: 12px; }
+.isl-full img { width: 48px; height: 48px; border-radius: 12px; }
+.isl-full small { display: block; font: 700 0.68rem/1 var(--body); color: #ff9a55; letter-spacing: 0.06em; text-transform: uppercase; text-align: left; }
+.isl-full b { display: block; margin-top: 4px; font: 800 1.15rem/1.05 var(--display); font-stretch: 82%; color: #fff; text-align: left; white-space: nowrap; }
+.wave { margin-left: auto; display: flex; gap: 3px; align-items: center; height: 24px; }
+.wave i { width: 4px; height: 22px; border-radius: 2px; background: #ff8a3d; animation: eq 820ms ease-in-out infinite alternate; }
+.wave i:nth-child(2) { animation-delay: -300ms; } .wave i:nth-child(3) { animation-delay: -560ms; } .wave i:nth-child(4) { animation-delay: -150ms; }
+@keyframes eq { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+.island.expanded .isl-full { opacity: 1; transition-delay: 220ms; }
+
+/* ---------- Lock screen ---------- */
+.lock {
+  position: absolute; inset: 0; z-index: 45;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 74px 14px 0;
+  background: rgb(8 8 12 / 0.25);
+  backdrop-filter: blur(28px) saturate(150%); -webkit-backdrop-filter: blur(28px) saturate(150%);
+  touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none;
+}
+.lock[hidden] { display: none; }
+.lock-pad { opacity: 0.85; }
+.lock-date { margin-top: 10px; font: 600 1.05rem/1 var(--body); color: rgb(255 255 255 / 0.85); }
+.lock-time { margin-top: 2px; font: 800 6.2rem/0.95 var(--display); font-stretch: 72%; letter-spacing: -0.03em; text-shadow: 0 2px 30px rgb(0 0 0 / 0.25); }
+.notes { width: 100%; margin-top: 28px; display: grid; gap: 8px; }
+.note {
+  position: relative; width: 100%;
+  display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center;
+  padding: 11px 12px; border: 0; border-radius: 20px; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.note > * { position: relative; z-index: 1; }
+.note img { width: 38px; height: 38px; border-radius: 9px; }
+.note .meta { display: flex; justify-content: space-between; font: 600 0.68rem/1.2 var(--body); letter-spacing: 0.04em; text-transform: uppercase; color: rgb(255 255 255 / 0.6); }
+.note b { display: block; margin-top: 2px; font-size: 0.86rem; }
+.note .body { display: block; font-size: 0.8rem; line-height: 1.3; color: rgb(255 255 255 / 0.78); }
+.lock.show .note { animation: noteIn 700ms var(--spring) both; animation-delay: calc(var(--n) * 90ms + 250ms); }
+@keyframes noteIn { from { opacity: 0; transform: translateY(34px) scale(0.92); } }
+.lock-foot { margin-top: auto; padding: 10px 30px 14px; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; gap: 12px; font: 600 0.8rem/1 var(--body); color: rgb(255 255 255 / 0.8); }
+.lock-foot span { animation: nudge 2s ease-in-out infinite; }
+.lock-foot::after { content: ""; width: 134px; height: 5px; border-radius: 3px; background: #fff; }
+@keyframes nudge { 50% { transform: translateY(-6px); } }
+
+/* ---------- Notification banners ---------- */
+.banner { position: absolute; left: 10px; right: 10px; top: 48px; z-index: 55; width: auto; transform: translateY(-170%); touch-action: none; }
+.banner[hidden] { display: none; }
+
+/* ---------- Spotlight search ---------- */
+.spot {
+  position: absolute; inset: 0; z-index: 48;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 58px 14px 0;
+  background: rgb(6 6 10 / 0.35);
+  backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%);
+  visibility: hidden; opacity: 0;
+}
+.spot.on { visibility: visible; }
+.spot-field { position: relative; display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 12px; border-radius: 14px; }
+.spot-field > * { position: relative; z-index: 1; }
+.spot-field svg { flex: none; opacity: 0.7; }
+.spot input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; color: var(--ink); font: 500 1rem var(--body); outline: none; }
+.spot input::placeholder { color: rgb(255 255 255 / 0.5); }
+.spot input::-webkit-search-cancel-button { display: none; }
+.spot-cancel { border: 0; background: none; color: #7db4ff; font-weight: 600; cursor: pointer; padding: 8px 0 8px 4px; }
+.spot-results { position: relative; list-style: none; margin: 0; padding: 6px; border-radius: 18px; max-height: calc(100% - 150px); overflow-y: auto; }
+.spot-results li { position: relative; z-index: 1; }
+.spot-results .hd { padding: 8px 10px 4px; font: 700 0.68rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.spot-results .hit { width: 100%; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; padding: 7px 8px; border: 0; border-radius: 12px; background: none; text-align: left; text-decoration: none; cursor: pointer; }
+.spot-results .hit:hover, .spot-results .hit.sel { background: rgb(255 255 255 / 0.1); }
+.spot-results .ic { width: 34px; height: 34px; border-radius: 8px; overflow: hidden; display: grid; place-items: center; }
+.spot-results .ic img { width: 100%; height: 100%; object-fit: cover; }
+.spot-results b { display: block; font-size: 0.9rem; font-weight: 600; }
+.spot-results small { display: block; font-size: 0.76rem; color: var(--ink-soft); }
+.spot-results .none { padding: 14px 10px; color: var(--ink-soft); font-size: 0.9rem; }
+
+/* ---------- Trailer ---------- */
+.shots video { flex: 0 0 auto; width: 92%; height: auto; aspect-ratio: 960 / 443; border-radius: 18px; scroll-snap-align: start; background: #000; object-fit: cover; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1); }
+
+/* ---------- Tap Against Time, playable ---------- */
+.get-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.get.play { border: 0; cursor: pointer; background: #33e9ff; color: #1b1036; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 6px 18px -6px rgb(51 233 255 / 0.7); }
+.get.ghost { background: rgb(255 255 255 / 0.1); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18); }
+.mini {
+  position: absolute; inset: 0; z-index: 6;
+  display: flex; flex-direction: column;
+  padding: 56px 20px 28px;
+  background: radial-gradient(120% 70% at 50% 42%, #3f2574, #1d1236 72%);
+  touch-action: manipulation; user-select: none; -webkit-user-select: none;
+}
+.mini[hidden] { display: none; }
+.mini-top { display: flex; justify-content: space-between; align-items: center; }
+.mini-stage { font: 800 0.9rem/1 var(--display); letter-spacing: 0.06em; color: #34e6ff; }
+.mini-quit { position: relative; width: 34px; height: 34px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+.mini-quit svg { position: relative; z-index: 1; width: 14px; height: 14px; }
+.mini-score { margin-top: 4px; text-align: center; font: 800 3.8rem/1 var(--display); font-stretch: 75%; }
+.mini-best { text-align: center; font-size: 0.78rem; letter-spacing: 0.1em; color: #c9bde6; }
+.mini-time { height: 8px; margin-top: 12px; border-radius: 4px; background: rgb(255 255 255 / 0.08); overflow: hidden; }
+.mini-time i { display: block; height: 100%; border-radius: inherit; background: #ffc93c; transform-origin: 0 50%; }
+.mini-field { position: relative; flex: 1; margin-top: 8px; }
+.mini-dot {
+  position: absolute; left: 50%; top: 50%; width: 74px; height: 74px; margin: -37px 0 0 -37px;
+  border: 0; border-radius: 50%; background: #33e9ff; cursor: pointer; touch-action: manipulation;
+  box-shadow: 0 0 0 14px rgb(140 90 255 / 0.35), 0 0 30px 6px rgb(51 233 255 / 0.45);
+}
+.mini.idle .mini-dot { animation: breathe 1.6s ease-in-out infinite; }
+@keyframes breathe { 50% { box-shadow: 0 0 0 22px rgb(140 90 255 / 0.22), 0 0 44px 10px rgb(51 233 255 / 0.5); } }
+.mini-tip { position: absolute; left: 0; right: 0; bottom: 14%; margin: 0; text-align: center; color: #c9bde6; font-weight: 600; }
+.mini:not(.idle) .mini-tip { display: none; }
+.burst { position: absolute; width: 74px; height: 74px; margin: -37px 0 0 -37px; border: 3px solid #33e9ff; border-radius: 50%; pointer-events: none; }
+.mini-over {
+  position: absolute; left: 20px; right: 20px; top: 50%; margin-top: -120px;
+  padding: 24px 18px; border-radius: 26px; text-align: center;
+  background: rgb(22 12 44 / 0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), inset 0 0 0 1px rgb(255 255 255 / 0.1);
+  opacity: 0; transform: scale(0.85); pointer-events: none;
+  transition: opacity 200ms ease, transform 460ms var(--spring);
+}
+.mini.over .mini-over { opacity: 1; transform: none; pointer-events: auto; }
+.mini.over .mini-dot { opacity: 0.2; pointer-events: none; }
+.mini-why { margin: 0; font: 800 1.15rem/1 var(--display); color: #ffc93c; }
+.mini-final { display: block; margin-top: 8px; font: 800 4rem/1 var(--display); font-stretch: 75%; }
+.mini-over small { display: block; margin-top: 4px; color: #c9bde6; }
+.mini-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+.mini-btns button.get { border: 0; cursor: pointer; }
+
 /* ---------- On a real phone, the page IS the home screen ---------- */
 @media (max-width: 760px) {
   .stage { display: block; padding: 0; min-height: 0; background: var(--bg); }
   .pitch { display: none; }
   .phone { width: 100%; height: 100dvh; min-height: 560px; padding: 0; border-radius: 0; background: none; box-shadow: none; }
   .screen { border-radius: 0; --screen-r: 0px; }
-  .camera, .status, .glare { display: none; }
+  .island, .status, .glare { display: none; }
+  .lock { padding-top: max(48px, calc(env(safe-area-inset-top) + 28px)); }
+  .lock-foot { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .banner { top: max(10px, env(safe-area-inset-top)); }
+  .spot { padding-top: max(16px, calc(env(safe-area-inset-top) + 8px)); }
+  .mini { padding-top: max(20px, calc(env(safe-area-inset-top) + 8px)); }
   .home { padding: max(18px, env(safe-area-inset-top)) 20px 0; }
   .dock { margin-bottom: max(14px, env(safe-area-inset-bottom)); }
   .app .scroll { padding-top: max(56px, calc(env(safe-area-inset-top) + 44px)); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
@@ -358,7 +503,8 @@ button { font: inherit; color: inherit; }
   .widget b.big { font-size: 1.4rem; }
   .widget.studio small { font-size: 0.64rem; }
 }
-@media (max-height: 700px) and (max-width: 760px) { .widget:not(.board):not(.lab) { aspect-ratio: 1.25; } }
+@media (max-height: 700px) and (max-width: 760px) { .lock-time { font-size: 4.8rem; } .notes { margin-top: 16px; } .note .body { display: none; }
+  .widget:not(.board):not(.lab) { aspect-ratio: 1.25; } }
 
 /* Without JavaScript every page and app is simply listed. */
 html:not(.js) .phone { height: auto; }
@@ -371,6 +517,9 @@ html:not(.js) .app .scroll { position: static; padding: 0; }
 html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, html:not(.js) .dots { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
+  .island, .island *, .mini-over { transition: none !important; }
+  .live-dot, .wave i, .lock-foot span, .mini.idle .mini-dot { animation: none; }
+  .lock.show .note { animation: none; }
   .wall i, .pill.live::before, .meter i { animation: none; }
   .js.ready .app-icon .tile::before { animation: none; }
   .js .home .grid > *, .js .dock > *, .js .dash { opacity: 1; transform: none; }
@@ -392,6 +541,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   <button class="app-icon" type="button" data-open="about"><span class="tile"><span class="glyph g-about"><img src="assets/anttech-logo.png" alt="" width="64" height="64"></span></span><span class="tip">About ANTTECH</span></button>
   <button class="app-icon" type="button" data-open="privacy"><span class="tile"><span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span></span><span class="tip">Privacy</span></button>
   <i class="sep" aria-hidden="true"></i>
+  <button class="spin" type="button" id="dash-search" aria-label="Search (press /)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg></button>
   <button class="spin" type="button" id="spin" aria-label="Turn the home screen to the next page"><svg width="22" height="22" viewBox="0 0 22 22" fill="#fff"><circle cx="4" cy="4" r="2.2"/><circle cx="11" cy="4" r="2.2"/><circle cx="18" cy="4" r="2.2"/><circle cx="4" cy="11" r="2.2"/><circle cx="11" cy="11" r="2.2"/><circle cx="18" cy="11" r="2.2"/><circle cx="4" cy="18" r="2.2"/><circle cx="11" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/></svg></button>
 </nav>
 
@@ -400,7 +550,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     <a class="mark" href="/"><img src="assets/anttech-logo.png" alt="" width="40" height="40">ANTTECH</a>
     <h1 id="hello">Small games. Finished. Free.</h1>
     <p>Pocket-sized iPhone games, made by one person in North Carolina. No accounts, no publisher.</p>
-    <span class="hint">Tap an app to open it. Drag the home screen sideways to spin it.</span>
+    <span class="hint">Tap an app to open it. Drag the home screen sideways to spin it, or pull down (or press /) to search.</span>
     <nav class="links" aria-label="Studio links">
       <a href="privacy.html">Tap Against Time privacy</a>
       <a href="dockside-privacy.html">Dockside privacy</a>
@@ -409,12 +559,16 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
       <a href="site-privacy.html">Website privacy</a>
       <a href="mailto:anttech1081@gmail.com">anttech1081@gmail.com</a>
     </nav>
+    <p class="legal">iPhone and App Store are trademarks of Apple Inc., registered in the U.S. and other countries. ANTTECH is an independent developer and is not affiliated with or endorsed by Apple.</p>
   </section>
 
   <div class="phone" id="phone">
     <div class="screen" id="screen">
       <div class="wall" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-      <div class="camera" aria-hidden="true"></div>
+      <button class="island" id="island" type="button" aria-label="Now testing: Raccoon Raid. Open it">
+        <span class="isl-compact" aria-hidden="true"><img src="assets/games/rr-icon.webp" alt=""><i class="live-dot"></i></span>
+        <span class="isl-full" aria-hidden="true"><img src="assets/games/rr-icon.webp" alt=""><span><small>Now testing</small><b>Raccoon Raid</b></span><span class="wave"><i></i><i></i><i></i><i></i></span></span>
+      </button>
       <div class="glare" id="glare" aria-hidden="true"></div>
       <div class="status" aria-hidden="true">
         <span id="clock">9:41</span>
@@ -509,17 +663,49 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
 
       <div class="dim" id="dim" aria-hidden="true"></div>
 
+      <div class="lock" id="lock" hidden>
+        <svg class="lock-pad" width="18" height="22" viewBox="0 0 18 22" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><rect x="1.5" y="9" width="15" height="11.5" rx="3" fill="#fff" stroke="none"/><path d="M4.5 9V6.5a4.5 4.5 0 0 1 9 0V9"/></svg>
+        <div class="lock-date" id="lock-date"></div>
+        <div class="lock-time" id="lock-time" aria-hidden="true">9:41</div>
+        <div class="notes" aria-label="Notifications">
+          <button class="note glass" type="button" data-app="raccoon-raid" style="--n:0"><img src="assets/games/rr-icon.webp" alt=""><span><span class="meta"><span>Raccoon Raid</span><span>now</span></span><b>Now in testing</b><span class="body">Wreck the campsite. Coming to the App Store.</span></span></button>
+          <button class="note glass" type="button" data-app="circuit-weave" style="--n:1"><img src="assets/games/cw-icon.webp" alt=""><span><span class="meta"><span>Circuit Weave</span><span>2h ago</span></span><b>In App Store review</b><span class="body">Join every pair, fill every square.</span></span></button>
+          <button class="note glass" type="button" data-app="dockside" style="--n:2"><img src="assets/games/dockside-icon.webp" alt=""><span><span class="meta"><span>Dockside</span><span>1d ago</span></span><b>In App Store review</b><span class="body">Free the red boat. 150 harbours.</span></span></button>
+          <button class="note glass" type="button" data-app="tap-against-time" style="--n:3" data-play="1"><img src="assets/games/tat-icon.webp" alt=""><span><span class="meta"><span>Tap Against Time</span><span></span></span><b>Free on the App Store</b><span class="body">Tap to play a round right here.</span></span></button>
+        </div>
+        <button class="lock-foot" type="button" id="lock-foot"><span>Swipe up to open</span></button>
+      </div>
+
+      <div class="spot" id="spot" role="dialog" aria-modal="true" aria-label="Search">
+        <div class="spot-field glass">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+          <input id="q" type="search" placeholder="Search games and pages" aria-label="Search games and pages" autocomplete="off" spellcheck="false">
+          <button class="spot-cancel" type="button" id="spot-cancel">Cancel</button>
+        </div>
+        <ul class="spot-results glass" id="results"></ul>
+      </div>
+
+      <button class="banner note glass" id="banner" type="button" hidden><img src="assets/games/rr-icon.webp" alt=""><span><span class="meta"><span class="b-name">Raccoon Raid</span><span>now</span></span><b class="b-title"></b><span class="body b-body"></span></span></button>
+
       <!-- Apps. Without JavaScript they are listed in full below the home screen. -->
       <article class="app" id="tap-against-time" role="dialog" aria-modal="true" aria-labelledby="h-tat" style="--c: var(--tat)">
         <div class="cover"><img src="assets/games/tat-icon.webp" alt=""></div>
         <div class="scroll">
           <div class="app-head">
             <img src="assets/games/tat-icon.webp" alt="" width="96" height="96">
-            <div><h2 id="h-tat">Tap Against Time</h2><div class="status-line">Free on iPhone</div><a class="get" href="https://apps.apple.com/app/id6755980854">GET</a></div>
+            <div><h2 id="h-tat">Tap Against Time</h2><div class="status-line">Free on iPhone</div><div class="get-row"><a class="get" href="https://apps.apple.com/app/id6755980854">GET</a><button class="get play" type="button" id="play-tat">PLAY HERE</button></div></div>
           </div>
           <p class="about-text">Tap the circle before it disappears. Every tap gives you a little less time, and one miss ends the run.</p>
           <div class="shots"><img src="assets/games/tat-1.webp" alt="Tap Against Time mid-run, a glowing circle to tap and the score at the top" width="414" height="900" loading="lazy"><img src="assets/games/tat-2.webp" alt="The Tap Against Time main menu" width="414" height="900" loading="lazy"></div>
           <div class="links"><a href="privacy.html">Privacy policy</a></div>
+        </div>
+        <div class="mini" id="mini" hidden>
+          <div class="mini-top"><span class="mini-stage">QUICK ROUND</span><button class="mini-quit glass" type="button" id="mini-quit" aria-label="Stop playing"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button></div>
+          <div class="mini-score" id="mini-score" aria-live="polite">0</div>
+          <div class="mini-best">BEST <span id="mini-best">0</span></div>
+          <div class="mini-time"><i id="mini-bar"></i></div>
+          <div class="mini-field" id="mini-field"><button class="mini-dot" type="button" id="mini-dot" aria-label="Tap the circle"></button><p class="mini-tip">Tap the circle to start</p></div>
+          <div class="mini-over" role="group" aria-label="Round over"><p class="mini-why" id="mini-why">Too slow!</p><b class="mini-final" id="mini-final">0</b><small id="mini-note">Best 0</small><div class="mini-btns"><button class="get play" type="button" id="mini-again">PLAY AGAIN</button><a class="get ghost" href="https://apps.apple.com/app/id6755980854">GET THE GAME</a></div></div>
         </div>
         <button class="close glass" type="button" aria-label="Close Tap Against Time"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
@@ -563,7 +749,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
             <div><h2 id="h-rr">Raccoon Raid: Campsite Chaos</h2><div class="status-line">In testing</div><span class="get wait">Coming to the App Store</span></div>
           </div>
           <p class="about-text">Load a raccoon into the slingshot and wreck the campsite. Raid coolers, pull off snack heists, wake the bear and take down the Ranger. 60 campsites across four worlds.</p>
-          <div class="shots wide"><img src="assets/games/rr-1.webp" alt="Raccoon Raid mid-raid on a beach campsite, a combo banner flashing over the wreckage" width="900" height="414" loading="lazy"><img src="assets/games/rr-2.webp" alt="A Raccoon Raid boss campsite" width="900" height="414" loading="lazy"></div>
+          <div class="shots wide"><video src="assets/video/rr-trailer.mp4" poster="assets/video/rr-trailer-poster.webp" width="960" height="443" muted loop playsinline controls preload="none" aria-label="Raccoon Raid trailer"></video><img src="assets/games/rr-1.webp" alt="Raccoon Raid mid-raid on a beach campsite, a combo banner flashing over the wreckage" width="900" height="414" loading="lazy"><img src="assets/games/rr-2.webp" alt="A Raccoon Raid boss campsite" width="900" height="414" loading="lazy"></div>
           <div class="links"><a href="raccoon-raid-privacy.html">Privacy policy</a></div>
         </div>
         <button class="close glass" type="button" aria-label="Close Raccoon Raid"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
@@ -580,7 +766,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
           <p class="about-text">ANTTECH is one developer in North Carolina. Every game here is free, with no account to make and no publisher in between.</p>
           <h3>Get in touch</h3>
           <div class="links"><a href="mailto:anttech1081@gmail.com">anttech1081@gmail.com</a><a href="https://www.instagram.com/ant_tech_/">Instagram · @ant_tech_</a></div>
-          <p class="fine">© 2026 ANTTECH</p>
+          <p class="fine">© 2026 ANTTECH. iPhone and App Store are trademarks of Apple Inc., registered in the U.S. and other countries. ANTTECH is an independent developer and is not affiliated with or endorsed by Apple.</p>
         </div>
         <button class="close glass" type="button" aria-label="Close About"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
@@ -630,10 +816,15 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
 
   // live clock in the status bar
   var clock = document.getElementById("clock");
-  function tick() { var d = new Date(); clock.textContent = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0"); }
+  function tick() {
+    var d = new Date(), t = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0");
+    clock.textContent = t;
+    document.getElementById("lock-time").textContent = t;
+    document.getElementById("lock-date").textContent = d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  }
   tick(); setInterval(tick, 20000);
 
-  requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add("ready"); }); });
+  function goReady() { requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add("ready"); }); }); }
 
   // ---- spring: damping ratio + response (Apple's two knobs), integrated per frame
   function Spring(onUpdate, x) { this.x = x || 0; this.v = 0; this.target = this.x; this.raf = 0; this.onUpdate = onUpdate; }
@@ -718,42 +909,55 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   }
   renderCube(0); pageEls[1].inert = true;
   dotBtns.forEach(function (b, n) { b.addEventListener("click", function () { setPage(n); }); });
-  document.getElementById("spin").addEventListener("click", function () { if (current) close(0); setPage(page ? 0 : 1); });
+  document.getElementById("spin").addEventListener("click", function () { if (locked) { unlock(0); return; } if (current) close(0); closeSpot(true); setPage(page ? 0 : 1); });
   document.addEventListener("keydown", function (e) {
-    if (current || e.target.closest("input, textarea")) return;
+    if (current || locked || spotOpen || e.target.closest("input, textarea")) return;
     if (e.key === "ArrowRight" && page === 0) setPage(1);
     if (e.key === "ArrowLeft" && page === 1) setPage(0);
   });
 
+  // drag sideways to turn the cube; pull down to bring in search
   (function () {
-    var x0 = 0, y0 = 0, p0 = 0, id = null, samples = [], suppress = false;
+    var x0 = 0, y0 = 0, p0 = 0, id = null, samples = [], suppress = false, mode = null;
     pagesEl.addEventListener("pointerdown", function (e) {
-      if (current || e.button > 0) return;
-      id = e.pointerId; x0 = e.clientX; y0 = e.clientY; p0 = cubeSpring.x; dragging = false;
-      samples = [{ x: e.clientX, t: performance.now() }];
+      if (current || locked || e.button > 0) return;
+      id = e.pointerId; x0 = e.clientX; y0 = e.clientY; p0 = cubeSpring.x; mode = null;
+      samples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
     });
     pagesEl.addEventListener("pointermove", function (e) {
       if (e.pointerId !== id) return;
       var dx = e.clientX - x0, dy = e.clientY - y0;
-      if (!dragging) {
-        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
-        dragging = true; cubeSpring.stop(); pagesEl.setPointerCapture(id);
+      if (!mode) {
+        if (Math.abs(dx) >= 8 && Math.abs(dx) > Math.abs(dy)) { mode = "cube"; cubeSpring.stop(); }
+        else if (dy > 10 && dy > Math.abs(dx)) { mode = "pull"; spotSpring.stop(); renderResults(); hideBanner(); }
+        else return;
+        dragging = true; pagesEl.setPointerCapture(id);
         document.querySelectorAll(".pressed").forEach(function (el) { el.classList.remove("pressed"); });
       }
-      var W = pagesEl.clientWidth, p = p0 - dx / W;
-      if (p < 0) p = p * 0.3; else if (p > 1) p = 1 + (p - 1) * 0.3;   // rubber band at the ends
-      cubeSpring.x = p; renderCube(p);
-      samples.push({ x: e.clientX, t: performance.now() }); if (samples.length > 6) samples.shift();
+      if (mode === "cube") {
+        var W = pagesEl.clientWidth, p = p0 - dx / W;
+        if (p < 0) p = p * 0.3; else if (p > 1) p = 1 + (p - 1) * 0.3;   // rubber band at the ends
+        cubeSpring.x = p; renderCube(p);
+      } else {
+        var sv = Math.min(1.08, dy / 170);
+        spotSpring.x = sv; renderSpot(sv);
+      }
+      samples.push({ x: e.clientX, y: e.clientY, t: performance.now() }); if (samples.length > 6) samples.shift();
     });
     function end(e) {
       if (e.pointerId !== id) return;
       id = null;
-      if (!dragging) return;
+      if (!mode) return;
       dragging = false; suppress = true; setTimeout(function () { suppress = false; }, 0);
-      var a = samples[0], b = samples[samples.length - 1];
-      var vx = (b.x - a.x) / Math.max(1, b.t - a.t) * 1000, W = pagesEl.clientWidth, pv = -vx / W;
-      var aim = Math.round(clamp(cubeSpring.x + pv * 0.18, 0, 1));
-      setPage(aim, pv);
+      var a = samples[0], b = samples[samples.length - 1], dt = Math.max(1, b.t - a.t);
+      if (mode === "cube") {
+        var vx = (b.x - a.x) / dt * 1000, W = pagesEl.clientWidth, pv = -vx / W;
+        setPage(Math.round(clamp(cubeSpring.x + pv * 0.18, 0, 1)), pv);
+      } else {
+        var vy = (b.y - a.y) / dt * 1000;
+        if (spotSpring.x > 0.45 || vy > 500) openSpot(vy / 170); else closeSpot(false, vy / 170);
+      }
+      mode = null;
     }
     pagesEl.addEventListener("pointerup", end);
     pagesEl.addEventListener("pointercancel", end);
@@ -825,7 +1029,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     app.querySelector(".scroll").scrollTop = 0;
     if (instant || reduce.matches) c.spring.set(1);
     else { c.spring.to(1, { damping: 0.86, response: 0.46 }); jiggle(-0.55); }
-    markRunning();
+    markRunning(); onAppOpen(app);
     if (location.hash !== "#" + id) history.pushState({ app: id }, "", "#" + id);
     setTimeout(function () { app.querySelector(".close").focus({ preventScroll: true }); }, instant ? 0 : 280);
   }
@@ -850,7 +1054,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
       wob.sq.set(0); wob.tx.set(0); wob.sk.set(0);
       c.icon && c.icon.focus({ preventScroll: true });
     }
-    markRunning();
+    markRunning(); onAppClosed(c.app);
   }
 
   // icons: feedback on press-down, open on tap
@@ -863,12 +1067,16 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
         if (!reduce.matches) icon.querySelector(".tile").animate(
           [{ transform: "translateX(0)" }, { transform: "translateX(14px)" }, { transform: "translateX(0)" }, { transform: "translateX(7px)" }, { transform: "translateX(0)" }],
           { duration: 620, easing: "ease-out" });
-        open(id, null);
+        launch(id);
       } else open(id, icon);
     });
   });
   document.querySelectorAll(".app .close").forEach(function (b) { b.addEventListener("click", function () { close(0); }); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && current) close(0); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (spotOpen) { closeSpot(); return; }
+    if (current) close(0);
+  });
   window.addEventListener("popstate", function () {
     var id = location.hash.slice(1);
     if (id && document.getElementById(id)) open(id, null); else if (current) close(0);
@@ -932,6 +1140,308 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     renderCube(cubeSpring.x);
     if (current) { current.rect = iconRect(current.icon); render(current.app, current.rect, current.spring.x); }
   });
+
+  // ---- one way in for every launcher (dash, island, banners, lock screen, search)
+  function launch(id, play) {
+    var run = function () {
+      closeSpot(true);
+      open(id, null);
+      if (play) setTimeout(miniShow, reduce.matches ? 0 : 420);
+    };
+    if (locked) unlock(0, run); else run();
+  }
+  function onAppOpen(app) {
+    var v = app.querySelector("video");
+    if (v && !reduce.matches) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    hideBanner();
+  }
+  function onAppClosed(app) {
+    var v = app.querySelector("video"); if (v) v.pause();
+    if (app.id === "tap-against-time") miniHide();
+  }
+
+  // ---- lock screen: swipe up (or tap) to unlock; the home screen zooms in behind it
+  var lock = document.getElementById("lock"), locked = false;
+  var lockSpring = new Spring(renderLock);
+  function renderLock(u) {
+    var H = screen.offsetHeight, k = clamp01(u);
+    lock.style.transform = u ? "translateY(" + (-u * H).toFixed(1) + "px)" : "";
+    lock.style.opacity = String(1 - 0.5 * k);
+    home.style.transform = k >= 1 ? "" : "scale(" + lerp(1.12, 1, k).toFixed(4) + ")";
+    home.style.opacity = k >= 1 ? "" : String(lerp(0.35, 1, k));
+  }
+  function unlock(velocity, then) {
+    if (!locked) { if (then) then(); return; }
+    locked = false;
+    try { sessionStorage.setItem("anttech-unlocked", "1"); } catch (e) {}
+    goReady();
+    var done = function () { lock.hidden = true; lock.style.transform = ""; home.style.transform = ""; home.style.opacity = ""; afterUnlock(); if (then) then(); };
+    if (reduce.matches) { lockSpring.set(1); done(); }
+    else lockSpring.to(1, { damping: 1, response: 0.42, velocity: velocity || 0 }, done);
+  }
+  (function () {
+    var y0 = 0, u0 = 0, id = null, samples = [], moved = false, tgt = null;
+    lock.addEventListener("pointerdown", function (e) {
+      if (!locked || e.button > 0) return;
+      id = e.pointerId; y0 = e.clientY; moved = false; tgt = e.target.closest(".note");
+      lockSpring.stop(); u0 = lockSpring.x; lock.setPointerCapture(id);
+      samples = [{ y: e.clientY, t: performance.now() }];
+    });
+    lock.addEventListener("pointermove", function (e) {
+      if (e.pointerId !== id) return;
+      var dy = e.clientY - y0; if (Math.abs(dy) > 6) moved = true;
+      var u = u0 - dy / (screen.offsetHeight * 0.6); if (u < 0) u *= 0.25;
+      lockSpring.x = u; renderLock(u);
+      samples.push({ y: e.clientY, t: performance.now() }); if (samples.length > 6) samples.shift();
+    });
+    function end(e) {
+      if (e.pointerId !== id) return;
+      id = null;
+      if (!moved) { var n = tgt; unlock(0, n ? function () { open(n.getAttribute("data-app"), null); if (n.hasAttribute("data-play")) setTimeout(miniShow, 420); } : null); return; }
+      var a = samples[0], b = samples[samples.length - 1], vy = (b.y - a.y) / Math.max(1, b.t - a.t) * 1000;
+      var pv = -vy / (screen.offsetHeight * 0.6);
+      if (vy < -400 || lockSpring.x > 0.3) unlock(pv);
+      else lockSpring.to(0, { damping: 0.75, response: 0.4, velocity: pv });
+    }
+    lock.addEventListener("pointerup", end);
+    lock.addEventListener("pointercancel", end);
+    // keyboard: the notes and the "Swipe up" button are real buttons
+    lock.addEventListener("click", function (e) {
+      if (e.detail !== 0) return;               // pointer taps are handled above
+      var n = e.target.closest(".note");
+      if (n) launch(n.getAttribute("data-app"), n.hasAttribute("data-play"));
+      else if (e.target.closest(".lock-foot")) unlock(0);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (locked && (e.key === "ArrowUp" || ((e.key === "Enter" || e.key === " ") && !e.target.closest("button, a")))) { e.preventDefault(); unlock(0); }
+    });
+  })();
+
+  // ---- Dynamic Island: peeks open with what's in testing, then settles into a live activity
+  var island = document.getElementById("island"), islT = 0;
+  function islandSet(state) { island.classList.toggle("compact", state === "compact"); island.classList.toggle("expanded", state === "expanded"); }
+  function islandPeek(delay) {
+    clearTimeout(islT);
+    islT = setTimeout(function () { islandSet("expanded"); islT = setTimeout(function () { islandSet("compact"); }, 3800); }, delay || 0);
+  }
+  island.addEventListener("click", function () {
+    if (island.classList.contains("expanded")) { clearTimeout(islT); islandSet("compact"); launch("raccoon-raid"); }
+    else islandPeek(0);
+  });
+
+  // ---- notification banners: a few drop in while you look around
+  var NEWS = [
+    { app: "raccoon-raid", img: "assets/games/rr-icon.webp", name: "Raccoon Raid", title: "The bear is awake", body: "Raccoon Raid is in testing. Coming to the App Store." },
+    { app: "tap-against-time", img: "assets/games/tat-icon.webp", name: "Tap Against Time", title: "Beat your best", body: "Play a quick round right here.", play: true },
+    { app: "circuit-weave", img: "assets/games/cw-icon.webp", name: "Circuit Weave", title: "Waiting on Apple", body: "Circuit Weave is in App Store review." },
+    { app: "dockside", img: "assets/games/dockside-icon.webp", name: "Dockside", title: "Harbour traffic", body: "Dockside: Cast Off is in App Store review." }
+  ];
+  var banner = document.getElementById("banner"), bNow = null, bIndex = 0, bShown = 0, bTimer = 0, bHide = 0, bSwiped = false;
+  var bannerSpring = new Spring(function (y) { banner.style.transform = "translateY(" + lerp(-170, 0, y).toFixed(2) + "%)"; });
+  function scheduleBanners() { clearTimeout(bTimer); if (bShown < 3) bTimer = setTimeout(nextBanner, bShown ? 24000 : 7000); }
+  function nextBanner() {
+    if (current || spotOpen || locked || document.hidden) { bTimer = setTimeout(nextBanner, 5000); return; }
+    showBanner(NEWS[bIndex++ % NEWS.length]); bShown++; scheduleBanners();
+  }
+  function showBanner(n) {
+    bNow = n;
+    banner.querySelector("img").src = n.img;
+    banner.querySelector(".b-name").textContent = n.name;
+    banner.querySelector(".b-title").textContent = n.title;
+    banner.querySelector(".b-body").textContent = n.body;
+    banner.setAttribute("aria-label", n.name + ": " + n.title + ". " + n.body);
+    banner.hidden = false;
+    if (reduce.matches) bannerSpring.set(1); else bannerSpring.to(1, { damping: 0.7, response: 0.45 });
+    clearTimeout(bHide); bHide = setTimeout(function () { hideBanner(); }, 5000);
+  }
+  function hideBanner(v) {
+    clearTimeout(bHide);
+    if (banner.hidden) return;
+    if (reduce.matches) { bannerSpring.set(0); banner.hidden = true; return; }
+    bannerSpring.to(0, { damping: 1, response: 0.32, velocity: v || 0 }, function () { banner.hidden = true; });
+  }
+  bannerSpring.set(0);
+  (function () {
+    var y0 = 0;
+    banner.addEventListener("pointerdown", function (e) { y0 = e.clientY; bSwiped = false; });
+    banner.addEventListener("pointerup", function (e) { if (e.clientY - y0 < -15) { bSwiped = true; hideBanner(-3); } });
+    banner.addEventListener("click", function () {
+      if (bSwiped || !bNow) return;
+      var n = bNow; hideBanner(); launch(n.app, n.play);
+    });
+  })();
+  function afterUnlock() { islandPeek(650); scheduleBanners(); }
+
+  // ---- Spotlight: pull down on the home screen, press / or Cmd/Ctrl+K
+  var spot = document.getElementById("spot"), q = document.getElementById("q"), results = document.getElementById("results");
+  var spotOpen = false, spotSel = 0, hits = [];
+  var spotSpring = new Spring(renderSpot);
+  var GLYPH = {
+    privacy: '<span class="glyph g-privacy" style="width:100%;height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>',
+    mail: '<span class="glyph g-mail" style="width:100%;height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>',
+    ig: '<span class="glyph g-ig" style="width:100%;height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="6" width="17" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.6"/><path d="M8.5 6 10 3.8h4L15.5 6" stroke-linejoin="round"/></svg></span>'
+  };
+  var IDX = [
+    { t: "Tap Against Time", s: "Game · Free on the App Store", img: "assets/games/tat-icon.webp", k: "tap time circle reflex", app: "tap-against-time" },
+    { t: "Dockside: Cast Off", s: "Game · In App Store review", img: "assets/games/dockside-icon.webp", k: "boats harbour harbor puzzle", app: "dockside" },
+    { t: "Circuit Weave", s: "Game · In App Store review", img: "assets/games/cw-icon.webp", k: "puzzle lines pairs wires", app: "circuit-weave" },
+    { t: "Raccoon Raid: Campsite Chaos", s: "Game · In testing", img: "assets/games/rr-icon.webp", k: "slingshot bear camp raccoon trailer video", app: "raccoon-raid" },
+    { t: "Play Tap Against Time", s: "A quick round, right here", img: "assets/games/tat-icon.webp", k: "play game round score mini", app: "tap-against-time", play: true },
+    { t: "About ANTTECH", s: "The studio", img: "assets/anttech-logo.png", k: "studio developer north carolina contact", app: "about" },
+    { t: "Privacy", s: "Every game's policy", glyph: "privacy", k: "policy data", app: "privacy" },
+    { t: "Tap Against Time privacy policy", s: "Web page", glyph: "privacy", k: "policy data", href: "privacy.html" },
+    { t: "Dockside privacy policy", s: "Web page", glyph: "privacy", k: "policy data", href: "dockside-privacy.html" },
+    { t: "Circuit Weave privacy policy", s: "Web page", glyph: "privacy", k: "policy data", href: "circuit-weave-privacy.html" },
+    { t: "Raccoon Raid privacy policy", s: "Web page", glyph: "privacy", k: "policy data ads admob", href: "raccoon-raid-privacy.html" },
+    { t: "Website privacy", s: "Web page", glyph: "privacy", k: "policy data site", href: "site-privacy.html" },
+    { t: "Instagram", s: "@ant_tech_", glyph: "ig", k: "social follow insta", href: "https://www.instagram.com/ant_tech_/" },
+    { t: "Email ANTTECH", s: "anttech1081@gmail.com", glyph: "mail", k: "mail contact support help", href: "mailto:anttech1081@gmail.com" }
+  ];
+  function renderResults() {
+    var words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    hits = words.length ? IDX.filter(function (it) {
+      var hay = (it.t + " " + it.s + " " + it.k).toLowerCase();
+      return words.every(function (w) { return hay.indexOf(w) >= 0; });
+    }) : IDX.slice(0, 5);
+    spotSel = 0;
+    results.textContent = "";
+    var hd = document.createElement("li"); hd.className = "hd"; hd.textContent = words.length ? "Top hits" : "Suggestions"; results.appendChild(hd);
+    if (!hits.length) { var no = document.createElement("li"); no.className = "none"; no.textContent = "No results. Try a game name."; results.appendChild(no); return; }
+    hits.forEach(function (it, i) {
+      var li = document.createElement("li");
+      var el = document.createElement(it.href ? "a" : "button");
+      el.className = "hit" + (i === 0 ? " sel" : "");
+      if (it.href) el.href = it.href; else el.type = "button";
+      var ic = document.createElement("span"); ic.className = "ic";
+      if (it.img) { var im = document.createElement("img"); im.src = it.img; im.alt = ""; ic.appendChild(im); } else ic.innerHTML = GLYPH[it.glyph];
+      var tx = document.createElement("span"), b = document.createElement("b"), sm = document.createElement("small");
+      b.textContent = it.t; sm.textContent = it.s; tx.appendChild(b); tx.appendChild(sm);
+      el.appendChild(ic); el.appendChild(tx);
+      el.addEventListener("click", function () { if (it.app) launch(it.app, it.play); else closeSpot(true); });
+      li.appendChild(el); results.appendChild(li);
+    });
+  }
+  function moveSel(d) {
+    var els = results.querySelectorAll(".hit"); if (!els.length) return;
+    els[spotSel].classList.remove("sel");
+    spotSel = (spotSel + d + els.length) % els.length;
+    els[spotSel].classList.add("sel"); els[spotSel].scrollIntoView({ block: "nearest" });
+  }
+  function renderSpot(sv) {
+    var k = clamp01(sv);
+    spot.style.opacity = String(k);
+    spot.classList.toggle("on", sv > 0.001);
+    spot.querySelector(".spot-field").style.transform = "translateY(" + (-30 * (1 - k)).toFixed(1) + "px)";
+    results.style.transform = "translateY(" + (-14 * (1 - k)).toFixed(1) + "px)";
+    if (!current && !locked) home.style.transform = sv > 0.001 ? "scale(" + (1 - 0.05 * k).toFixed(4) + ")" : "";
+  }
+  function openSpot(v) {
+    if (locked) return;
+    if (!spotOpen) { spotOpen = true; renderResults(); hideBanner(); }
+    if (reduce.matches) spotSpring.set(1); else spotSpring.to(1, { damping: 0.9, response: 0.34, velocity: v || 0 });
+    setTimeout(function () { q.focus({ preventScroll: true }); }, 60);
+  }
+  function closeSpot(instant, v) {
+    if (!spotOpen && spotSpring.x === 0) return;
+    spotOpen = false; q.blur();
+    var reset = function () { q.value = ""; };
+    if (instant || reduce.matches) { spotSpring.set(0); reset(); }
+    else spotSpring.to(0, { damping: 1, response: 0.3, velocity: v || 0 }, reset);
+  }
+  q.addEventListener("input", renderResults);
+  q.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown") { e.preventDefault(); moveSel(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); moveSel(-1); }
+    else if (e.key === "Enter") { e.preventDefault(); var el = results.querySelectorAll(".hit")[spotSel]; if (el) el.click(); }
+  });
+  document.getElementById("spot-cancel").addEventListener("click", function () { closeSpot(); });
+  spot.addEventListener("click", function (e) { if (e.target === spot) closeSpot(); });
+  document.getElementById("dash-search").addEventListener("click", function () { launchSearch(); });
+  function launchSearch() { if (locked) unlock(0, openSpot); else { if (current) close(0); openSpot(); } }
+  document.addEventListener("keydown", function (e) {
+    var typing = e.target.closest && e.target.closest("input, textarea");
+    if ((e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) { e.preventDefault(); launchSearch(); }
+  });
+  renderSpot(0);
+
+  // ---- Tap Against Time, playable: tap the circle before the bar runs out; every tap gives you less time
+  var mini = document.getElementById("mini"), dot = document.getElementById("mini-dot"), field = document.getElementById("mini-field");
+  var g = { state: "idle", score: 0, limit: 1.5, t: 0, raf: 0, last: 0 };
+  function bestGet() { try { return +localStorage.getItem("tat-best") || 0; } catch (e) { return 0; } }
+  function bestSet(v) { try { localStorage.setItem("tat-best", String(v)); } catch (e) {} }
+  var bestMem = bestGet();
+  function miniPaint() {
+    document.getElementById("mini-score").textContent = g.score;
+    document.getElementById("mini-best").textContent = bestMem;
+    document.getElementById("mini-bar").style.transform = "scaleX(" + (g.state === "run" ? clamp01(g.t / g.limit) : 1) + ")";
+  }
+  function miniShow() {
+    cancelAnimationFrame(g.raf);
+    mini.hidden = false; mini.classList.remove("over"); mini.classList.add("idle");
+    g.state = "idle"; g.score = 0;
+    dot.style.left = "50%"; dot.style.top = "50%";
+    miniPaint();
+    setTimeout(function () { dot.focus({ preventScroll: true }); }, 50);
+  }
+  function miniHide() { cancelAnimationFrame(g.raf); g.state = "idle"; mini.hidden = true; }
+  function placeDot() {
+    var w = field.clientWidth, h = field.clientHeight;
+    dot.style.left = (46 + Math.random() * Math.max(0, w - 92)).toFixed(0) + "px";
+    dot.style.top = (46 + Math.random() * Math.max(0, h - 92)).toFixed(0) + "px";
+    if (!reduce.matches) dot.animate([{ transform: "scale(0.3)" }, { transform: "scale(1.08)" }, { transform: "scale(1)" }], { duration: 260, easing: "ease-out" });
+  }
+  function burst() {
+    if (reduce.matches) return;
+    var b = document.createElement("span"); b.className = "burst";
+    b.style.left = dot.style.left; b.style.top = dot.style.top;
+    field.appendChild(b);
+    b.animate([{ transform: "scale(1)", opacity: 1 }, { transform: "scale(2.3)", opacity: 0 }], { duration: 420, easing: "ease-out" }).onfinish = function () { b.remove(); };
+    document.getElementById("mini-score").animate([{ transform: "scale(1.25)" }, { transform: "scale(1)" }], { duration: 220, easing: "ease-out" });
+  }
+  function loop(now) {
+    var dt = Math.min(0.05, (now - g.last) / 1000); g.last = now;
+    g.t -= dt; miniPaint();
+    if (g.t <= 0) { miniOver("Too slow!"); return; }
+    g.raf = requestAnimationFrame(loop);
+  }
+  function miniStart() {
+    mini.classList.remove("idle", "over");
+    g.state = "run"; g.score = 0; g.limit = 1.5; g.t = g.limit; g.last = performance.now();
+    placeDot(); miniPaint();
+    cancelAnimationFrame(g.raf); g.raf = requestAnimationFrame(loop);
+  }
+  function miniOver(why) {
+    cancelAnimationFrame(g.raf); g.state = "over";
+    var isBest = g.score > bestMem;
+    if (isBest) { bestMem = g.score; bestSet(bestMem); }
+    document.getElementById("mini-why").textContent = why;
+    document.getElementById("mini-final").textContent = g.score;
+    document.getElementById("mini-note").textContent = isBest && g.score > 0 ? "New best!" : "Best " + bestMem;
+    miniPaint(); mini.classList.add("over");
+    if (!reduce.matches) field.animate([{ transform: "translateX(0)" }, { transform: "translateX(-10px)" }, { transform: "translateX(8px)" }, { transform: "translateX(-4px)" }, { transform: "translateX(0)" }], { duration: 320 });
+    setTimeout(function () { document.getElementById("mini-again").focus({ preventScroll: true }); }, 120);
+  }
+  function hit() {
+    if (g.state === "idle") { miniStart(); return; }
+    if (g.state !== "run") return;
+    g.score++; burst();
+    g.limit = Math.max(0.42, g.limit * 0.955); g.t = g.limit;
+    placeDot(); miniPaint();
+  }
+  dot.addEventListener("pointerdown", function (e) { e.stopPropagation(); e.preventDefault(); hit(); });
+  dot.addEventListener("click", function (e) { if (e.detail === 0) hit(); });   // keyboard
+  field.addEventListener("pointerdown", function () { if (g.state === "run") miniOver("Missed!"); });
+  document.getElementById("mini-again").addEventListener("click", miniStart);
+  document.getElementById("mini-quit").addEventListener("click", miniHide);
+  document.getElementById("play-tat").addEventListener("click", miniShow);
+  document.addEventListener("visibilitychange", function () { if (document.hidden && g.state === "run") miniOver("Paused"); });
+
+  // ---- start: lock screen once per visit, unless a link points straight at an app
+  var seen = false; try { seen = sessionStorage.getItem("anttech-unlocked") === "1"; } catch (e) {}
+  if (!location.hash.slice(1) && !seen) {
+    locked = true; lock.hidden = false; lockSpring.set(0);
+    requestAnimationFrame(function () { lock.classList.add("show"); });
+  } else { goReady(); setTimeout(afterUnlock, 400); }
 
   // deep links: blackantm2.github.io/#raccoon-raid opens that app
   var start = location.hash.slice(1);
