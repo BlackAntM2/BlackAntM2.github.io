@@ -625,7 +625,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
                   <ul>
                     <li><button type="button" data-open="tap-against-time"><img src="assets/games/tat-icon.webp" alt=""><b>Tap Against Time</b><span class="pill live">On the App Store</span></button></li>
                     <li><button type="button" data-open="dockside"><img src="assets/games/dockside-icon.webp" alt=""><b>Dockside: Cast Off</b><span class="pill review">In review</span></button></li>
-                    <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">In review</span></button></li>
+                    <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">Timed update</span></button></li>
                     <li><button type="button" data-open="raccoon-raid"><img src="assets/games/rr-icon.webp" alt=""><b>Raccoon Raid</b><span class="pill test">In testing</span></button></li>
                     <li><button type="button" data-open="shadowbound"><img src="assets/games/sb-icon.webp" alt=""><b>Shadowbound</b><span class="pill dev">In development</span></button></li>
                   </ul>
@@ -682,7 +682,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
         <div class="lock-time" id="lock-time" aria-hidden="true">9:41</div>
         <div class="notes" aria-label="Notifications">
           <button class="note glass" type="button" data-app="raccoon-raid" style="--n:0"><img src="assets/games/rr-icon.webp" alt=""><span><span class="meta"><span>Raccoon Raid</span><span>now</span></span><b>Now in testing</b><span class="body">Wreck the campsite. Coming to the App Store.</span></span></button>
-          <button class="note glass" type="button" data-app="circuit-weave" style="--n:1"><img src="assets/games/cw-icon.webp" alt=""><span><span class="meta"><span>Circuit Weave</span><span>2h ago</span></span><b>In App Store review</b><span class="body">Join every pair, fill every square.</span></span></button>
+          <button class="note glass" type="button" data-app="circuit-weave" style="--n:1"><img src="assets/games/cw-icon.webp" alt=""><span><span class="meta"><span>Circuit Weave</span><span>now</span></span><b>Now with a timer</b><span class="body">Every circuit is a race. Beat your best time.</span></span></button>
           <button class="note glass" type="button" data-app="dockside" style="--n:2"><img src="assets/games/dockside-icon.webp" alt=""><span><span class="meta"><span>Dockside</span><span>1d ago</span></span><b>In App Store review</b><span class="body">Free the red boat. 150 harbours.</span></span></button>
           <button class="note glass" type="button" data-app="tap-against-time" style="--n:3" data-play="1"><img src="assets/games/tat-icon.webp" alt=""><span><span class="meta"><span>Tap Against Time</span><span></span></span><b>Free on the App Store</b><span class="body">Tap to play a round right here.</span></span></button>
         </div>
@@ -744,10 +744,10 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
         <div class="scroll">
           <div class="app-head">
             <img src="assets/games/cw-icon.webp" alt="" width="96" height="96">
-            <div><h2 id="h-cw">Circuit Weave</h2><div class="status-line">In App Store review</div><span class="get wait">Coming once Apple approves it</span></div>
+            <div><h2 id="h-cw">Circuit Weave</h2><div class="status-line">New: timed circuits</div><span class="get wait">Coming soon to the App Store</span></div>
           </div>
-          <p class="about-text">Join every pair and fill every square without crossing a line. Boards grow from 4×4 to 6×8, and every colour has its own shape.</p>
-          <div class="shots"><img src="assets/games/cw-1.webp" alt="A Circuit Weave board with routes filling most of the squares" width="414" height="900" loading="lazy"><img src="assets/games/cw-2.webp" alt="An early 5 by 5 Circuit Weave board, each colour marked with its own shape" width="414" height="900" loading="lazy"></div>
+          <p class="about-text">Join every pair and fill every square without crossing a line, against the clock. The timer starts the moment your finger touches a signal, and every circuit keeps your best time. 150 circuits grow from 4×4 to 7×10, and every colour has its own shape.</p>
+          <div class="shots"><img src="assets/games/cw-1.webp" alt="A Circuit Weave board mid-solve with glowing routes and the timer running at 0:22.2" width="414" height="900" loading="lazy"><img src="assets/games/cw-2.webp" alt="A finished Circuit Weave board, every square filled, solved in 0:41.7" width="414" height="900" loading="lazy"><img src="assets/games/cw-3.webp" alt="The Perfect circuit panel showing the time and the best time" width="414" height="900" loading="lazy"></div>
           <div class="links"><a href="circuit-weave-privacy.html">Privacy policy</a></div>
         </div>
         <button class="close glass" type="button" aria-label="Close Circuit Weave"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
@@ -1261,10 +1261,10 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
 
   // ---- notification banners: a few drop in while you look around
   var NEWS = [
+    { app: "circuit-weave", img: "assets/games/cw-icon.webp", name: "Circuit Weave", title: "Race the clock", body: "Circuit Weave is now timed. Beat your best." },
     { app: "raccoon-raid", img: "assets/games/rr-icon.webp", name: "Raccoon Raid", title: "The bear is awake", body: "Raccoon Raid is in testing. Coming to the App Store." },
     { app: "shadowbound", img: "assets/games/sb-icon.webp", name: "Shadowbound", title: "The tower lies", body: "500 towers, one ninja. Shadowbound is coming soon." },
     { app: "tap-against-time", img: "assets/games/tat-icon.webp", name: "Tap Against Time", title: "Beat your best", body: "Play a quick round right here.", play: true },
-    { app: "circuit-weave", img: "assets/games/cw-icon.webp", name: "Circuit Weave", title: "Waiting on Apple", body: "Circuit Weave is in App Store review." },
     { app: "dockside", img: "assets/games/dockside-icon.webp", name: "Dockside", title: "Harbour traffic", body: "Dockside: Cast Off is in App Store review." }
   ];
   var banner = document.getElementById("banner"), bNow = null, bIndex = 0, bShown = 0, bTimer = 0, bHide = 0, bSwiped = false;
@@ -1315,7 +1315,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   var IDX = [
     { t: "Tap Against Time", s: "Game · Free on the App Store", img: "assets/games/tat-icon.webp", k: "tap time circle reflex", app: "tap-against-time" },
     { t: "Dockside: Cast Off", s: "Game · In App Store review", img: "assets/games/dockside-icon.webp", k: "boats harbour harbor puzzle", app: "dockside" },
-    { t: "Circuit Weave", s: "Game · In App Store review", img: "assets/games/cw-icon.webp", k: "puzzle lines pairs wires", app: "circuit-weave" },
+    { t: "Circuit Weave", s: "Game · Coming soon", img: "assets/games/cw-icon.webp", k: "puzzle lines pairs wires timer timed race", app: "circuit-weave" },
     { t: "Raccoon Raid: Campsite Chaos", s: "Game · In testing", img: "assets/games/rr-icon.webp", k: "slingshot bear camp raccoon trailer video", app: "raccoon-raid" },
     { t: "Shadowbound", s: "Game · In development", img: "assets/games/sb-icon.webp", k: "ninja wall jump tower rage hard climb", app: "shadowbound" },
     { t: "Play Tap Against Time", s: "A quick round, right here", img: "assets/games/tat-icon.webp", k: "play game round score mini", app: "tap-against-time", play: true },
