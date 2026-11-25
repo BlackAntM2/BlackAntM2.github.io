@@ -545,6 +545,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
   <button class="app-icon" type="button" data-open="circuit-weave"><span class="tile"><img src="assets/games/cw-icon.webp" alt="" width="128" height="128"></span><span class="tip">Circuit Weave</span></button>
   <button class="app-icon" type="button" data-open="raccoon-raid"><span class="tile"><img src="assets/games/rr-icon.webp?v=2" alt="" width="128" height="128"></span><span class="tip">Raccoon Raid</span></button>
   <button class="app-icon" type="button" data-open="shadowbound"><span class="tile"><img src="assets/games/sb-icon.webp" alt="" width="128" height="128"></span><span class="tip">Shadowbound</span></button>
+  <button class="app-icon" type="button" data-open="wake-rush"><span class="tile"><img src="assets/games/wr-icon.webp" alt="" width="128" height="128"></span><span class="tip">Wake Rush</span></button>
   <i class="sep" aria-hidden="true"></i>
   <button class="app-icon" type="button" data-open="about"><span class="tile"><span class="glyph g-about"><img src="assets/anttech-logo.png" alt="" width="64" height="64"></span></span><span class="tip">About ANTTECH</span></button>
   <button class="app-icon" type="button" data-open="privacy"><span class="tile"><span class="glyph g-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span></span><span class="tip">Privacy</span></button>
@@ -619,6 +620,9 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
                 <button class="app-icon" type="button" style="--i:6" data-open="shadowbound" aria-label="Shadowbound">
                   <span class="tile"><img src="assets/games/sb-icon.webp" alt="" width="128" height="128"><span class="badge" aria-hidden="true">NEW</span></span><span class="label">Shadowbound</span>
                 </button>
+                <button class="app-icon" type="button" style="--i:6" data-open="wake-rush" aria-label="Wake Rush, coming soon">
+                  <span class="tile"><img src="assets/games/wr-icon.webp" alt="" width="128" height="128"><span class="badge" aria-hidden="true">SOON</span></span><span class="label">Wake Rush</span>
+                </button>
 
                 <section class="widget glass board" style="--i:7" aria-labelledby="board-h">
                   <h2 id="board-h">Release board</h2>
@@ -628,6 +632,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
                     <li><button type="button" data-open="circuit-weave"><img src="assets/games/cw-icon.webp" alt=""><b>Circuit Weave</b><span class="pill review">Timed update</span></button></li>
                     <li><button type="button" data-open="raccoon-raid"><img src="assets/games/rr-icon.webp?v=2" alt=""><b>Raccoon Raid</b><span class="pill live">On the App Store</span></button></li>
                     <li><button type="button" data-open="shadowbound"><img src="assets/games/sb-icon.webp" alt=""><b>Shadowbound</b><span class="pill live">On the App Store</span></button></li>
+                    <li><button type="button" data-open="wake-rush"><img src="assets/games/wr-icon.webp" alt=""><b>Wake Rush</b><span class="pill review">Coming soon</span></button></li>
                   </ul>
                 </section>
               </div>
@@ -781,6 +786,20 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
           <div class="links"><a href="shadowbound-privacy.html">Privacy policy</a></div>
         </div>
         <button class="close glass" type="button" aria-label="Close Shadowbound"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+        <div class="bar" aria-hidden="true"></div>
+      </article>
+
+      <article class="app" id="wake-rush" role="dialog" aria-modal="true" aria-labelledby="h-wr" style="--c: #0b5e86">
+        <div class="cover"><img src="assets/games/wr-icon.webp" alt=""></div>
+        <div class="scroll">
+          <div class="app-head">
+            <img src="assets/games/wr-icon.webp" alt="" width="96" height="96">
+            <div><h2 id="h-wr">Wake Rush</h2><div class="status-line">New: front flips</div><span class="get wait">Coming soon to the App Store</span></div>
+          </div>
+          <p class="about-text">One finger, one speedboat, endless waves. Hold to gas up the swell, let go to launch, then spin backflips and front flips and land flat with the wave. Chain clean landings to fill the Rush meter, ride the monster waves, and try not to wipe out. Unlock new boats and wakes, and share your best ten seconds.</p>
+          <div class="shots wide"><video src="assets/video/wr-trailer.mp4" poster="assets/video/wr-trailer-poster.webp" width="960" height="540" muted loop playsinline controls preload="none" aria-label="Wake Rush trailer"></video><img src="assets/games/wr-1.webp" alt="A perfect double front flip in Wake Rush, the boat landing flat on a teal wave under a stormy sunset" width="900" height="414" loading="lazy"><img src="assets/games/wr-2.webp" alt="Wake Rush with the Rush meter full, a perfect backflip and RUSH flashing over the waves" width="900" height="414" loading="lazy"></div>
+        </div>
+        <button class="close glass" type="button" aria-label="Close Wake Rush"><svg viewBox="0 0 14 14" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
         <div class="bar" aria-hidden="true"></div>
       </article>
 
@@ -1318,6 +1337,7 @@ html:not(.js) .app .close, html:not(.js) .app .bar, html:not(.js) .app .cover, h
     { t: "Circuit Weave", s: "Game · Coming soon", img: "assets/games/cw-icon.webp", k: "puzzle lines pairs wires timer timed race", app: "circuit-weave" },
     { t: "Raccoon Raid: Campsite Chaos", s: "Game · Free on the App Store", img: "assets/games/rr-icon.webp?v=2", k: "slingshot bear camp raccoon trailer video golden snack sugar rush", app: "raccoon-raid" },
     { t: "Shadowbound", s: "Game · Free on the App Store", img: "assets/games/sb-icon.webp", k: "ninja wall jump tower rage hard climb", app: "shadowbound" },
+    { t: "Wake Rush", s: "Game · Coming soon", img: "assets/games/wr-icon.webp", k: "boat speedboat wave flip jump surf", app: "wake-rush" },
     { t: "Play Tap Against Time", s: "A quick round, right here", img: "assets/games/tat-icon.webp", k: "play game round score mini", app: "tap-against-time", play: true },
     { t: "About ANTTECH", s: "The studio", img: "assets/anttech-logo.png", k: "studio developer north carolina contact", app: "about" },
     { t: "Privacy", s: "Every game's policy", glyph: "privacy", k: "policy data", app: "privacy" },
